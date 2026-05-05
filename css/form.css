@@ -1,0 +1,244 @@
+/* styles.css */
+
+/* Add styles for your form fields or other elements here */
+#MPI_MAC_FIELD {
+    /* Example style for the textarea */
+    border: 1px solid #ccc;
+}
+
+/* --- Credit Card Visual Styling (CSS Generated) --- */
+.credit-card-container {
+    position: relative;
+    width: 400px; 
+    max-width: 100%;
+    /* Reduced padding to bring controls closer if needed, adjusted height based on content */
+    padding-bottom: 252px; 
+    margin-bottom: 20px; /* Reduced margin */
+    
+    /* CSS Generated Card Body */
+    background-color: #000; 
+    border-radius: 12px; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden; 
+}
+
+/* IC Chip using a pseudo-element */
+.credit-card-container::before {
+    content: '';
+    position: absolute;
+    top: 30%; 
+    left: 10%; 
+    width: 15%; 
+    height: 20%; 
+    background-color: #b8860b; 
+    border-radius: 4px; 
+    z-index: 1; 
+
+    /* Realistic black lines using a linear gradient */
+    background-image: 
+        linear-gradient(to right, 
+            #b8860b 0%, #b8860b 20%, 
+            #000 20%, #000 25%, 
+            #b8860b 25%, #b8860b 45%, 
+            #000 45%, #000 50%, 
+            #b8860b 50%, #b8860b 70%, 
+            #000 70%, #000 75%, 
+            #b8860b 75%, #b8860b 100% 
+        );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+
+/* Common style for card fields overlaid on the image */
+.credit-card-container input {
+    position: absolute;
+    background-color: transparent; 
+    color: #f0f0f0; 
+    border: none;
+    
+    padding: 8px 10px; 
+    box-sizing: border-box; 
+    border-radius: 0;
+    z-index: 2; 
+    font-size: 16px; 
+    font-family: monospace; 
+
+    border-color: transparent; 
+    caret-color: white; 
+    
+    /* FIXES FOR AUTOFILL/PERSISTENT BACKGROUNDS */
+    -webkit-text-fill-color: #f0f0f0 !important; 
+    box-shadow: 0 0 0 1000px transparent inset !important; 
+    transition: background-color 5000s ease-in-out 0s; 
+}
+
+/* Ensure transparent background on focus/active state */
+.credit-card-container input:focus,
+.credit-card-container input:active {
+    outline: none;
+    background-color: transparent !important; 
+}
+
+/* Force transparency specifically on the autofill pseudo-class */
+.credit-card-container input:-webkit-autofill,
+.credit-card-container input:-webkit-autofill:hover, 
+.credit-card-container input:-webkit-autofill:focus, 
+.credit-card-container input:-webkit-autofill:active  {
+    background-color: transparent !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    -webkit-text-fill-color: #f0f0f0 !important;
+    transition: background-color 5000s ease-in-out 0s; 
+}
+
+
+/* --- Specific Card Field Positioning --- */
+
+.card-number-input {
+    top: 70%; 
+    left: 8%; 
+    width: 65%; 
+    text-align: left; 
+    font-size: 32px; 
+    padding: 10px 10px;
+}
+
+.name-input {
+    top: 80%;
+    left: 8%;
+    width: 50%;
+    font-size: 14px !important;
+    text-transform: uppercase;
+}
+
+.expiry-input {
+    top: 80%;
+    left: 60%; 
+    width: 15%; 
+    font-size: 14px !important; 
+    text-align: center;
+}
+
+.cvv-input {
+    top: 70%; 
+    left: 75%; 
+    width: 17%; 
+    font-size: 14px !important; 
+    text-align: center;
+    padding: 10px 10px; 
+}
+
+/* --- New Controls Styling --- */
+.controls-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+}
+
+.controls-container h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 0px;
+}
+
+.controls label,
+.controls input[type="text"],
+.controls select,
+.controls textarea {
+    display: block; 
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+
+.controls input[type="text"],
+.controls select,
+.controls textarea {
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    /* Ensure card styles are overridden */
+    background-color: white !important;
+    color: #333 !important;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.controls-container button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+}
+
+
+body {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+
+.controls {
+	margin-top: 20px;
+    margin-bottom: 0px;
+	  float: left;
+}
+
+.controls button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+.controls label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#h1_style {
+  background-color: LightGray;
+  color: black;
+  border: 0px solid black;
+  margin: 0px;
+  padding: 30px;
+  text-align: center;
+}
+.p_style {
+  background-color: white;
+  float: left;
+  color: black;
+  border: 0px solid white;
+  margin: 0px;
+  padding: 30px;
+  width: 46%;
+}
+.p2_style {
+  background-color: white;
+  float: right;
+  margin-left: 30%;
+  color: black;
+  border: 0px solid black;
+  margin: 0px;
+  padding: 0px;
+  
