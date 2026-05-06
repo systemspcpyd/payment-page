@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAT Payment Dashboard</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+
+        .header {
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            height: 40px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            width: 100vw;
+            height: calc(100vh - 60px); /* Adjust based on header height */
+        }
+
+        .pane {
+            flex: 1;
+            border: none;
+            height: 100%;
+        }
+
+        /* Divider line between the two pages */
+        .pane:first-child {
+            border-right: 2px solid #ccc;
+        }
+
+        .label-bar {
+            background: #eee;
+            padding: 5px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <strong>UAT TESTING DASHBOARD</strong>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- LEFT PANE -->
+        <div style="display: flex; flex-direction: column; flex: 1;">
+            <div class="label-bar">
+                <span>PAYMENT REQUEST (PAG)</span>
+                <span>form/payment.html</span>
+            </div>
+            <iframe src="form/payment.html" class="pane"></iframe>
+        </div>
+
+        <!-- RIGHT PANE -->
+        <div style="display: flex; flex-direction: column; flex: 1;">
+            <div class="label-bar">
+                <span>CHANNEL INQUIRY</span>
+                <span>form/channel.html</span>
+            </div>
+            <iframe src="form/channel.html" class="pane"></iframe>
+        </div>
+    </div>
+
+</body>
+</html>
