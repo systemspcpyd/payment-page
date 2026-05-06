@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="../css/form.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.27/jsrsasign-all-min.js"></script>
+  
+</head>
+
+<div class="controls">
+<body> 
+
+ <form id="form" method="post" action="" >
+
+             <label for="MPI_MERC_ID">MPI_MERC_ID (MID):</label>
+             <input type="text" name="MPI_MERC_ID" id="MPI_MERC_ID" maxlength="15" >
+
+            <label for="MPI_TRXN_ID">MPI_TRXN_ID (Transaction ID):</label>
+             <input type="text" name="MPI_TRXN_ID" id="MPI_TRXN_ID" maxlength="20" >
+
+             <label for="MPI_MAC">MPI_MAC (Signed MAC) :</label>
+             <textarea name="MPI_MAC" id="MPI_MAC" maxlength="344" rows="5" cols="100" ></textarea>
+
+ </form>
+
+   <button onclick="clear_mac()" >Clear MAC</button><br>
+      <textarea id = "mac" rows="1" cols="90" ></textarea><br> 
+  
+   <button onclick="trim_mac()" >Trim MAC</button><br><br>
+   
+   <button onclick="mkReq()">Key Exhcange </button>
+   
+
+   <button onclick="channel()">Get Payment Channel </button>
+			<div id="response-container" style="margin-top: 20px; display: none;">
+				<h3>Available Payment Channels</h3>
+				<table id="channel-table" border="1" style="width: 100%; border-collapse: collapse;">
+					<thead style="background-color: #f2f2f2;">
+						<tr>
+							<th style="padding: 8px;">Channel Name</th>
+							<th style="padding: 8px;">Channel ID</th>
+							<th style="padding: 8px;">Status</th>
+						</tr>
+					</thead>
+					<tbody id="table-body"></tbody>
+				</table>
+			</div>
+
+</body>
+
+
+<script>
+
+const KEY_EXCHANGE_URL = "https://devlinkv2.paydee.co/mpigw/mkReq";
+const PAYMENT_REQUEST_URL = "https://devlinkv2.paydee.co/mpigw/mpReq";
+const GET_CHANNEL_URL = "https://devlinkv2.paydee.co/mpigw/channels";
+const PUBLICKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq8j2SHHfzMLlhYppnlk-QqjjjZwMkhK6s6rERd0JhhY_6-Md4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxViWe1dzG5TQakJ_i8ZOQuUYFJg02RcwUTzE3ty-x7mkwj9t2wAdRqTagyaDIAVMTxP_Y4AS76xjA3aH43Q0HKHGAxxIlXBIQxImuPhlUbPtVtTHIsUwkIx2BDh8kPZ3Mgr3Cyky0F-cHpEFSi3rPSSLD_FVHlJRW2cODVm8E-s98CURQYs1npzDztzZgZPnnb9K57CB2Z50Ve6qUV7z4-uHs3nehiMJHktIs7LQIDAQAB"
+
+document.getElementById("form").action = PAYMENT_REQUEST_URL;
+
+function channel() {
+    const MID = document.forms["form"]["MPI_MERC_ID"].value;
+    const transactionID = document.forms["form"]["MPI_TRXN_ID"].value;
+    const MAC = document.forms["form"]["MPI_MAC"].value;
+
+    const tbody = document.getElementById('table-body');
+    const container = document.getElementById('response-container');
+
+    const params = new URLSearchParams({
+        "MPI_MERC_ID": MID,
+        "MPI_TRXN_ID": transactionID,
+        "MPI_MAC": MAC
+    });
+
+    fetch(`${GET_CHANNEL_URL}?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            // 1. IMPORTANT: Clear previous table rows before adding new ones
+            tbody.innerHTML = ""; 
+
+            if (data.MPI_PAYMENT_CHANNEL_LIST && data.MPI_PAYMENT_CHANNEL_LIST.length > 0) {
+                // 2. IMPORTANT: Show the hidden table container
+                container.style.display = 'block';
+
+                data.MPI_PAYMENT_CHANNEL_LIST.forEach(category => {
+                    const methodType = category.MPI_PAYMENT_METHOD;
+                    const channels = category.MPI_PAYMENT_CHANNEL;
+
+                    channels.forEach(item => {
+                        let row = tbody.insertRow();
+                        
+                        // Column 1: Name with Tag
+                        row.insertCell(0).innerHTML = `<span class="method-tag">${methodType}</span> ${item.MPI_CHANNEL_NAME}`;
+                        
+                        // Column 2: ID
+                        row.insertCell(1).textContent = item.MPI_CHANNEL_ID;
+                        
+                        // Column 3: Button with class
+                        let btnCell = row.insertCell(2);
+                        let btn = document.createElement("button");
+                        btn.className = "btn-select"; 
+                        btn.textContent = item.MPI_CHANNEL_STATUS === 'A' ? "Active" : "Offline";
+                        btn.disabled = (item.MPI_CHANNEL_STATUS !== 'A');
+                        
+                        btn.onclick = () => {
+                            alert("Selected: " + item.MPI_CHANNEL_NAME + " (" + item.MPI_CHANNEL_ID + ")");
+                        };
+                        btnCell.appendChild(btn);
+                    });
+                });
+            } else {
+                // 3. IMPORTANT: Handle cases where the API returns an error message
+                alert("No channels found: " + (data.MPI_ERROR_DESC || "Unknown API Error"));
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            alert("Connection error occurred. Check your network or API URL.");
+        });
+}
+
+async function mkReq() {
+    let MID = document.forms["form"]["MPI_MERC_ID"].value;
+    let transactionID = document.forms["form"]["MPI_TRXN_ID"].value;
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+        "merchantId": MID,
+        "pubKey": PUBLICKEY,
+        "purchaseId": transactionID
+    });
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        // mode: 'no-cors' REMOVED to allow reading the body
+    };
+
+    try {
+        const response = await fetch(KEY_EXCHANGE_URL, requestOptions);
+        
+        // This will now work because no-cors is removed
+        const result = await response.json(); 
+
+        // Specific check: errorCode must be exactly "000"
+        if (result.errorCode === "000") {
+            alert(`✅ Success!\nCode: ${result.errorCode}\nMessage: ${result.errorMessage || 'Key Exchange successful.'}`);
+        } else {
+            alert(`❌ Key Exchange Failed\nError Code: ${result.errorCode}\nMessage: ${result.errorMessage || 'Error'}`);
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert("⚠️ Connection Blocked: The server likely does not allow CORS requests from this domain.");
+    }
+}
+
+function clear_mac() 
+{
+  let rawString = 
+    document.forms["form"]["MPI_MERC_ID"].value 
+  + document.forms["form"]["MPI_TRXN_ID"].value;
+
+
+              document.getElementById("mac").value = rawString;
+        
+            try {
+                // CLEAN THE KEY HERE
+                const CLEAN_KEY = PRIVATE_KEY.replace(/^[ \t]+/gm, '');
+        
+                let sig = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
+                sig.init(CLEAN_KEY); 
+                sig.updateString(rawString);
+                let sigValueHex = sig.sign();
+                
+                let base64Value = hextob64(sigValueHex);
+                let base64UrlValue = base64Value
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '');
+        
+                document.forms["form"]["MPI_MAC"].value = base64UrlValue;
+                
+            } catch (e) {
+                console.error("Signing Error:", e);
+                alert("Error generating MAC. Make sure the private key is formatted correctly.");
+            }
+  
+}
+
+function trim_mac() {
+  let macElement = document.forms["form"]["MPI_MAC"];
+  
+  let rawMac = macElement.value;
+  
+  let trimmedMac = rawMac.replace(/[+]/g, "-")
+                         .replace(/[/]/g, "_")
+                         .replace(/[=]/g, "");
+  
+  macElement.value = trimmedMac;
+}
+
+let d = new Date();
+let year = d.getFullYear() ;
+let mth  = d.getMonth() +1;
+ mth = mth.toString().padStart(2, '0');
+let day = d.getDate() ;
+ day = day.toString().padStart(2, '0');
+let hrs = d.getHours() ;
+ hrs = hrs.toString().padStart(2, '0');
+let min = d.getMinutes() ;
+ min = min.toString().padStart(2, '0');
+let sec = d.getSeconds() ;
+ sec = sec.toString().padStart(2, '0');
+
+
+let y = "GETCNL" + year + mth + day + hrs + min + sec;
+document.forms["form"]["MPI_TRXN_ID"].value = y;
+
+	
+</script>
+
+
+</html>
+
+
+
+
+
+
