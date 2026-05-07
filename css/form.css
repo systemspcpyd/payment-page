@@ -12,13 +12,15 @@ body {
     background-color: #f4f4f9;
 }
 
-/* --- Dashboard Layout (Side-by-Side) --- */
+/* --- Dashboard Layout (Side-by-Side with Gap) --- */
 .dashboard-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    gap: 0; /* Ensures no spaces between iframes */
-    overflow: hidden;
+    /* Added gap to separate the two HTML iframes */
+    gap: 20px; 
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .pane-wrapper {
@@ -26,31 +28,27 @@ body {
     flex-direction: column;
     flex: 1;
     overflow: hidden;
-}
-
-/* Divider line between the two panels */
-.pane-wrapper:first-child {
-    border-right: 1px solid #ccc;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 .pane {
     flex: 1;
     border: none;
     width: 100%;
-    background-color: white;
 }
 
-/* --- Label Bar (Matching Form Label Style) --- */
+/* --- Label Bar (Headers) --- */
 .label-bar {
     background: #eee;
-    padding: 8px 10px; /* Aligns with inner form padding */
+    padding: 10px 15px; 
     border-bottom: 1px solid #ddd;
     display: flex;
     justify-content: flex-start;
 }
 
 .label-bar span {
-    /* Exact match to .controls label font and size */
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
@@ -58,21 +56,16 @@ body {
     text-transform: uppercase;
 }
 
-/* --- Form Controls Styling --- */
-.controls-container {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #ffffff; 
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 400px;
-    max-width: 100%;
+/* --- Form Controls Styling (Vertical Spacing for Lines) --- */
+.controls {
+    padding: 15px;
 }
 
 .controls label {
     display: block;
     width: 100%;
-    margin-bottom: 5px;
+    /* Space between label and the box below it */
+    margin-bottom: 8px; 
     font-weight: bold;
     font-size: 14px;
     color: #333;
@@ -84,10 +77,11 @@ body {
     display: block;
     width: 100%;
     box-sizing: border-box;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #aaa;
     border-radius: 4px;
-    margin-bottom: 15px;
+    /* This creates the space between the rows/lines */
+    margin-bottom: 25px; 
     background-color: white !important;
     color: #333 !important;
     font-family: Arial, sans-serif;
@@ -96,14 +90,16 @@ body {
 
 .controls button {
     display: inline-block;
-    padding: 10px 15px;
+    padding: 10px 20px;
     margin-right: 10px;
+    margin-bottom: 10px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: bold;
 }
 
 .controls button:hover {
@@ -116,7 +112,7 @@ body {
     width: 400px; 
     max-width: 100%;
     padding-bottom: 252px; 
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     background-color: #000; 
     border-radius: 12px; 
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -126,10 +122,7 @@ body {
 .credit-card-container::before {
     content: '';
     position: absolute;
-    top: 30%; 
-    left: 10%; 
-    width: 15%; 
-    height: 20%; 
+    top: 30%; left: 10%; width: 15%; height: 20%; 
     background-color: #b8860b; 
     border-radius: 4px; 
     z-index: 1; 
