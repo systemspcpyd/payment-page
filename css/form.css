@@ -1,0 +1,162 @@
+/* form.css */
+
+/* --- General Form Elements --- */
+#MPI_MAC_FIELD {
+    border: 1px solid #ccc;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+/* --- Dashboard Layout (Side-by-Side) --- */
+.dashboard-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    gap: 0; /* Ensures no spaces between iframes */
+    overflow: hidden;
+}
+
+.pane-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Divider line between the two panels */
+.pane-wrapper:first-child {
+    border-right: 1px solid #ccc;
+}
+
+.pane {
+    flex: 1;
+    border: none;
+    width: 100%;
+    background-color: white;
+}
+
+/* --- Label Bar (Matching Form Label Style) --- */
+.label-bar {
+    background: #eee;
+    padding: 8px 10px; /* Aligns with inner form padding */
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.label-bar span {
+    /* Exact match to .controls label font and size */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+}
+
+/* --- Form Controls Styling --- */
+.controls-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+}
+
+.controls label {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.controls input[type="text"],
+.controls select,
+.controls textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background-color: white !important;
+    color: #333 !important;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.controls button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+/* --- Credit Card Visual Styling --- */
+.credit-card-container {
+    position: relative;
+    width: 400px; 
+    max-width: 100%;
+    padding-bottom: 252px; 
+    margin-bottom: 20px;
+    background-color: #000; 
+    border-radius: 12px; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden; 
+}
+
+.credit-card-container::before {
+    content: '';
+    position: absolute;
+    top: 30%; 
+    left: 10%; 
+    width: 15%; 
+    height: 20%; 
+    background-color: #b8860b; 
+    border-radius: 4px; 
+    z-index: 1; 
+    background-image: linear-gradient(to right, #b8860b 0%, #b8860b 20%, #000 20%, #000 25%, #b8860b 25%, #b8860b 45%, #000 45%, #000 50%, #b8860b 50%, #b8860b 70%, #000 70%, #000 75%, #b8860b 75%, #b8860b 100%);
+}
+
+.credit-card-container input {
+    position: absolute;
+    background-color: transparent; 
+    color: #f0f0f0; 
+    border: none;
+    padding: 8px 10px; 
+    box-sizing: border-box; 
+    z-index: 2; 
+    font-size: 16px; 
+    font-family: monospace; 
+    caret-color: white; 
+    -webkit-text-fill-color: #f0f0f0 !important; 
+}
+
+/* Specific Card Field Positions */
+.card-number-input { top: 70%; left: 8%; width: 65%; font-size: 32px; }
+.name-input { top: 80%; left: 8%; width: 50%; font-size: 14px !important; text-transform: uppercase; }
+.expiry-input { top: 80%; left: 60%; width: 15%; font-size: 14px !important; text-align: center; }
+.cvv-input { top: 70%; left: 75%; width: 17%; font-size: 14px !important; text-align: center; }
+
+/* --- Legacy Helpers --- */
+#h1_style { background-color: LightGray; text-align: center; padding: 30px; margin: 0; }
+.p_style { background-color: white; float: left; padding: 30px; width: 46%; }
+.p2_style { background-color: white; float: right; margin-left: 30%; padding: 0px; }
