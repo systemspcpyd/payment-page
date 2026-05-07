@@ -8,24 +8,21 @@
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <!-- LEFT PANE -->
-                <div style="display: flex; flex-direction: column; flex: 1;">
-            <div class="label-bar">
-                <span>CHANNEL INQUIRY</span>
-            </div>
-            <iframe src="channel.html" class="pane"></iframe>
+<div class="dashboard-container">
+    <div class="pane-wrapper">
+        <div class="label-bar">
+            <span>CHANNEL INQUIRY</span>
         </div>
-
-        <!-- RIGHT PANE -->
-                <div style="display: flex; flex-direction: column; flex: 1;">
-            <div class="label-bar">
-                <span>PAYMENT REQUEST (PAG)</span>
-            </div>
-            <iframe src="payment.html" class="pane"></iframe>
-        </div>
-
+        <iframe src="channel.html" class="pane"></iframe>
     </div>
+
+    <div class="pane-wrapper">
+        <div class="label-bar">
+            <span>PAYMENT REQUEST (PAG)</span>
+        </div>
+        <iframe src="payment.html" class="pane"></iframe>
+    </div>
+</div>
 
 </body>
 </html>
