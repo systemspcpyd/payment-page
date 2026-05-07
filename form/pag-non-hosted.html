@@ -51,28 +51,23 @@
 </head>
 <body>
 
-    <div class="header">
-        <strong>UAT TESTING DASHBOARD</strong>
-    </div>
-
     <div class="dashboard-container">
         <!-- LEFT PANE -->
-        <div style="display: flex; flex-direction: column; flex: 1;">
+                <div style="display: flex; flex-direction: column; flex: 1;">
+            <div class="label-bar">
+                <span>CHANNEL INQUIRY</span>
+            </div>
+            <iframe src="form/channel.html" class="pane"></iframe>
+        </div>
+
+        <!-- RIGHT PANE -->
+                <div style="display: flex; flex-direction: column; flex: 1;">
             <div class="label-bar">
                 <span>PAYMENT REQUEST (PAG)</span>
-                <span>form/payment.html</span>
             </div>
             <iframe src="form/payment.html" class="pane"></iframe>
         </div>
 
-        <!-- RIGHT PANE -->
-        <div style="display: flex; flex-direction: column; flex: 1;">
-            <div class="label-bar">
-                <span>CHANNEL INQUIRY</span>
-                <span>form/channel.html</span>
-            </div>
-            <iframe src="form/channel.html" class="pane"></iframe>
-        </div>
     </div>
 
 </body>
