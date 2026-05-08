@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Test Page</title>
+    <link rel="stylesheet" href="../css/form.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.27/jsrsasign-all-min.js"></script>
+    
+    <script src="config.js"></script>
+    
+    <script src="api-logic.js"></script>
+</head>
+
+<body>
+    <div class="controls">
+        <form id="form" method="post" action="">
+            <input type="hidden" id="MPI_RESPONSE_TYPE" value="">
+            <input type="hidden" id="MPI_RETURN_URL" name="MPI_RETURN_URL" value="">
+
+            <label for="MPI_MERC_ID">MPI_MERC_ID (MID):</label>
+            <input type="text" name="MPI_MERC_ID" id="MPI_MERC_ID" maxlength="15" value="YOUR_MID_HERE">
+
+            <label for="MPI_TRXN_ID">MPI_TRXN_ID (Transaction ID):</label>
+            <input type="text" name="MPI_TRXN_ID" id="MPI_TRXN_ID" maxlength="20">
+
+            <label for="MPI_MAC">MPI_MAC (Signed MAC):</label>
+            <textarea name="MPI_MAC" id="MPI_MAC" maxlength="344" rows="5"></textarea>
+        </form>
+
+        <hr>
+
+        <button onclick="clear_mac()">1. Generate MAC</button>
+        <textarea id="mac" rows="1" style="width:100%; margin-top:5px;" readonly></textarea>
+        
+        <br><br>
+        
+        <button onclick="mkReq()">2. Key Exchange</button>
+        <button onclick="channel()">3. Get Payment Channels</button>
+        
+        <br><br>
+
+        <button id="pay-btn" onclick="mpReq('PAG')" style="background-color: #28a745;">Final Pay (PAG)</button>
+        <button onclick="mpReq('MPI')" style="background-color: #17a2b8;">Final Pay (MPI)</button>
+
+        <div id="response-container" style="margin-top: 20px; display: none;">
+            <h3>Available Payment Channels</h3>
+            <table id="channel-table" border="1" style="width: 100%; border-collapse: collapse; background: white;">
+                <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th>Channel Name</th>
+                        <th>Channel ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <form id="redirect-form" style="display:none;"></form>
+
+    <script>
+        /**
+         * Page-Specific Initialization
+         * Things that only happen on this specific page load
+         */
+        
+        // 1. Set default action from config
+        document.getElementById("form").action = CONFIG.PAG;
+
+        // 2. Generate unique Transaction ID
+        const d = new Date();
+        const timestamp = d.getFullYear() + 
+                        (d.getMonth() + 1).toString().padStart(2, '0') + 
+                        d.getDate().toString().padStart(2, '0') + 
+                        d.getHours().toString().padStart(2, '0') + 
+                        d.getMinutes().toString().padStart(2, '0') + 
+                        d.getSeconds().toString().padStart(2, '0');
+        
+        document.getElementById("MPI_TRXN_ID").value = "GETCNL" + timestamp;
+    </script>
+</body>
+</html>
