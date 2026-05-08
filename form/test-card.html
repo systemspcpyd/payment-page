@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gpayment Test Card Reference</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; color: #333; padding: 20px; }
+        h2 { border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #bfbfbf; font-weight: bold; }
+        .description-row { background-color: #d9d9d9; font-weight: bold; }
+        .label-cell { width: 30%; font-weight: bold; }
+        .brand-cell { width: 20%; }
+        
+        /* This adds the extra spacing you requested */
+        .section-spacing {
+            margin-top: 80px; 
+        }
+    </style>
+</head>
+<body>
+
+    <h2>3Ds Card (Gpayment)</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Fields</th>
+                <th>Values</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td class="label-cell">Card holder name</td><td>Test Card</td></tr>
+            <tr><td class="label-cell">Expiry date (YYMM)</td><td>3008</td></tr>
+            <tr><td class="label-cell">CVV</td><td>123</td></tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr class="description-row">
+                <td colspan="3">Description - Transaction will complete without any challenge from the ACS.</td>
+            </tr>
+            <tr>
+                <td rowspan="2" class="label-cell">Authentication success - frictionless</td>
+                <td class="brand-cell">Visa</td>
+                <td>4100000000000100</td>
+            </tr>
+            <tr>
+                <td class="brand-cell">Mastercard</td>
+                <td>5100000000000107</td>
+            </tr>
+            
+            <tr class="description-row">
+                <td colspan="3">Description - Transaction will step up to a challenge using a password. Enter the password "123456" and submit to complete the transaction.</td>
+            </tr>
+            <tr>
+                <td rowspan="2" class="label-cell">Authentication success – challenge</td>
+                <td class="brand-cell">Visa</td>
+                <td>4100000000005000</td>
+            </tr>
+            <tr>
+                <td class="brand-cell">Mastercard</td>
+                <td>5100000000005007</td>
+            </tr>
+
+            <tr class="description-row">
+                <td colspan="3">Description - Transaction will step up to a challenge using a password. Enter the password "111111" and submit to simulate the cardholder not being authenticated.</td>
+            </tr>
+            <tr>
+                <td rowspan="2" class="label-cell">Authentication failed</td>
+                <td class="brand-cell">Visa</td>
+                <td>4100000000300000</td>
+            </tr>
+            <tr>
+                <td class="brand-cell">Mastercard</td>
+                <td>5100000000300002</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-spacing">Non 3Ds Card</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Fields</th>
+                <th>Values</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td class="label-cell">Card number</td><td>4005524000000006</td></tr>
+            <tr><td class="label-cell">Card holder name</td><td>Test Card</td></tr>
+            <tr><td class="label-cell">Expiry date (YYMM)</td><td>3112</td></tr>
+            <tr><td class="label-cell">CVV</td><td>226</td></tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
