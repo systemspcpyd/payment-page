@@ -2,39 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Card</title>
+    <title>Test Card Reference</title>
     <style>
+        /* Aligned with your form.css body */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             line-height: 1.2; 
             color: #333; 
+            margin: 0;
+            /* Matches the .controls padding from your CSS */
             padding: 15px; 
-            font-size: 12px;
-            background-color: #f8f9fa;
+            font-size: 14px; /* Matches your form label font-size */
+            background-color: #f4f4f9; /* Matches your form.css background */
         }
         
+        /* Aligned with your form.css label styling */
         h2 { 
             font-size: 15px; 
             border-bottom: 2px solid #444; 
             padding-bottom: 5px; 
-            margin: 25px 0 10px 0;
+            /* Set to 0 to align with the first label on the left */
+            margin: 0 0 15px 0; 
+            text-transform: uppercase;
+            font-weight: bold;
         }
 
         table { 
             width: 100%;
-            max-width: 900px; /* Adjust this to fit your right-side screen space */
+            max-width: 900px;
             border-collapse: collapse; 
             background: #fff;
-            /* This forces the browser to obey the widths we set below */
             table-layout: fixed; 
-            margin-bottom: 20px;
+            margin-bottom: 25px; /* Matches your form.css margin-bottom */
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
         }
 
         th, td { 
             border: 1px solid #ccc; 
-            padding: 8px;
+            padding: 10px; /* Matches your form input padding */
             text-align: left; 
-            overflow: hidden; /* Keeps long numbers from breaking the alignment */
+            overflow: hidden; 
             text-overflow: ellipsis;
             white-space: nowrap;
         }
@@ -42,32 +51,38 @@
         th { 
             background-color: #444; 
             color: #fff;
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
         }
 
-        /* --- THE ALIGNMENT SETTINGS --- */
-        /* These percentages must total 100% across all columns */
-        .col-brand { width: 25%; }
-        .col-number { width: 35%; }
-        .col-expiry { width: 15%; }
+        /* Column Widths */
+        .col-brand { width: 22%; }
+        .col-number { width: 38%; }
+        .col-expiry { width: 14%; }
         .col-cvv    { width: 10%; }
-        .col-pass   { width: 15%; }
+        .col-pass   { width: 16%; }
 
         .desc-row {
-            background-color: #e9ecef;
+            background-color: #eee; /* Matches your .label-bar color */
             font-weight: bold;
             font-size: 11px;
+            color: #333;
         }
 
-        .mono { font-family: 'Courier New', monospace; font-weight: bold; }
+        .mono { 
+            font-family: Arial, monospace; 
+            font-weight: bold; 
+            font-size: 13px;
+        }
         
-        .section-spacing { margin-top: 50px; }
+        /* Matches the space between your form sections */
+        .section-spacing { margin-top: 40px; }
+
     </style>
 </head>
 <body>
 
-    <h2>3Ds Card (Gpayment)</h2>
+    <h2>3Ds Test Card (Gpayment)</h2>
     <table>
         <thead>
             <tr>
@@ -75,7 +90,7 @@
                 <th class="col-number">Card Number</th>
                 <th class="col-expiry">Expiry (YYMM)</th>
                 <th class="col-cvv">CVV</th>
-                <th class="col-pass">Password</th>
+                <th class="col-pass">Password/PIN</th>
             </tr>
         </thead>
         <tbody>
@@ -97,7 +112,7 @@
         </tbody>
     </table>
 
-    <h2 class="section-spacing">Non 3Ds Card</h2>
+    <h2 class="section-spacing">Non 3Ds Test Card</h2>
     <table>
         <thead>
             <tr>
@@ -112,19 +127,15 @@
             <tr>
                 <td>Visa</td><td class="mono">4005524000000006</td><td>3112</td><td>226</td><td>1234</td>
             </tr>
-			
             <tr>
                 <td>Visa</td><td class="mono">4229989999000012</td><td>3112</td><td>871</td><td>1234</td>
             </tr>
-			
             <tr>
                 <td>Visa</td><td class="mono">4123580008071115</td><td>3112</td><td>794</td><td>1234</td>
             </tr>
-						
             <tr>
                 <td>Visa</td><td class="mono">4940487470001268</td><td>3112</td><td>-</td><td>-</td>
             </tr>
-			
             <tr>
                 <td>MasterCard</td><td class="mono">5413330089700026</td><td>1912</td><td>999</td><td>-</td>
             </tr>
