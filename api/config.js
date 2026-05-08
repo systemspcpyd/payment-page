@@ -1,5 +1,6 @@
 // config.js
 const CONFIG = {
+		const MPI_KEY_EXCHANGE_URL = "https://payment-page-virid.vercel.app/api/key-exchange";
 		const KEY_EXCHANGE_URL = "https://devlinkv2.paydee.co/mpigw/mkReq";
 		const PAYMENT_REQUEST_URL = "https://devlinkv2.paydee.co/mpigw/mpReq";
 		const GET_CHANNEL_URL = "https://devlinkv2.paydee.co/mpigw/channels";
