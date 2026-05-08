@@ -1,9 +1,12 @@
 // config.js
 const CONFIG = {
-		const MPI_KEY_EXCHANGE_URL = "https://payment-page-virid.vercel.app/api/key-exchange";
-		const KEY_EXCHANGE_URL = "https://devlinkv2.paydee.co/mpigw/mkReq";
-		const PAYMENT_REQUEST_URL = "https://devlinkv2.paydee.co/mpigw/mpReq";
-		const GET_CHANNEL_URL = "https://devlinkv2.paydee.co/mpigw/channels";
+		const MPI_KEY_EXCHANGE = "https://payment-page-virid.vercel.app/api/key-exchange";
+		const KEY_EXCHANGE = "https://devlinkv2.paydee.co/mpigw/mkReq";
+		const MPI = "https://devlink.paydee.co/mpi/mpReq";
+		const MPI_HOSTED = "https://devlink.paydee.co/mpi/mercReq";
+		const PAG = "https://devlinkv2.paydee.co/mpigw/mpReq";
+		const PAG_HOSTED = "https://devlinkv2.paydee.co/mpigw/mercReq";
+		const GET_CHANNEL = "https://devlinkv2.paydee.co/mpigw/channels";
 		const PUBLICKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq8j2SHHfzMLlhYppnlk-QqjjjZwMkhK6s6rERd0JhhY_6-Md4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxViWe1dzG5TQakJ_i8ZOQuUYFJg02RcwUTzE3ty-x7mkwj9t2wAdRqTagyaDIAVMTxP_Y4AS76xjA3aH43Q0HKHGAxxIlXBIQxImuPhlUbPtVtTHIsUwkIx2BDh8kPZ3Mgr3Cyky0F-cHpEFSi3rPSSLD_FVHlJRW2cODVm8E-s98CURQYs1npzDztzZgZPnnb9K57CB2Z50Ve6qUV7z4-uHs3nehiMJHktIs7LQIDAQAB";
 	    const PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----
         MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md
