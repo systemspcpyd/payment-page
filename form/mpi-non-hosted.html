@@ -135,6 +135,9 @@
          * Uses native form submission to Gateway to avoid CORS errors.
          */
 async function mpReq() {
+	// ---  Scrolls the main parent page to the top ---
+    window.top.scrollTo({ top: 0, behavior: 'smooth' });
+	
     const form = document.getElementById("form");
     const payButton = document.querySelector("button[onclick='mpReq()']");
     const responseType = document.getElementById("MPI_RESPONSE_TYPE").value;
