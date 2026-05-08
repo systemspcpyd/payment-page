@@ -1,86 +1,58 @@
 // api-logic.js
 
 // mpReq function
-async function mpReq() {
-    // Scrolls the main parent page to the top for better UX
+// Add 'urlKey' as a parameter
+async function mpReq(urlKey) {
     window.top.scrollTo({ top: 0, behavior: 'smooth' });
     
+    // Get the actual URL from CONFIG using the key passed from the button
+    const targetUrl = CONFIG[urlKey]; 
+    if (!targetUrl) {
+        alert("Invalid URL Key provided!");
+        return;
+    }
+
     const form = document.getElementById("form");
-    const payButton = document.querySelector("button[onclick='mpReq()']");
+    const payButton = document.getElementById("pay-btn"); // Give your button a fixed ID
     const responseType = document.getElementById("MPI_RESPONSE_TYPE").value;
 
-    // 1. Set Return URL from Config
-    document.getElementById("MPI_RETURN_URL").value = CONFIG.VERCEL_CALLBACK_URL;
+    document.getElementById("MPI_RETURN_URL").value = CONFIG.VERCEL_CALLBACK;
     
     const inputs = form.querySelectorAll('input, select, textarea');
-    
-    // Disable empty fields (Server requires this for MAC verification)
     inputs.forEach(input => {
         if (!input.value.trim()) input.disabled = true;
     });
 
-    // --- CASE A: Standard Form Redirect ---
+    // CASE A: Form Redirect
     if (!responseType) {
+        form.action = targetUrl; // Set the action dynamically
         payButton.disabled = true;
-        payButton.innerText = "Redirecting...";
         form.submit();
-        
-        // Cleanup UI in case they navigate back
-        setTimeout(() => {
-            inputs.forEach(input => input.disabled = false);
-            payButton.disabled = false;
-            payButton.innerText = "Pay";
-        }, 2000);
         return; 
     }
 
-    // --- CASE B: JSON Capture and Forward ---
-    payButton.disabled = true;
-    payButton.innerText = "Processing...";
-
-    // Re-enable to gather data for the manual fetch payload
-    inputs.forEach(input => input.disabled = false);
-    const formData = new FormData(form);
-    const payload = new URLSearchParams();
-    
-    formData.forEach((value, key) => {
-        if (value.trim() !== "") payload.append(key, value);
-    });
-
+    // CASE B: JSON Fetch
     try {
-        const response = await fetch(CONFIG.PAYMENT_REQUEST_URL, {
+        // Gathering data logic here...
+        const formData = new FormData(form);
+        const payload = new URLSearchParams();
+        inputs.forEach(input => input.disabled = false); // Re-enable to read
+        formData.forEach((value, key) => { if(value.trim() !== "") payload.append(key, value); });
+
+        const response = await fetch(targetUrl, { // Use the dynamic targetUrl
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: payload
         });
 
         const data = await response.json();
-
-        // Dynamically build the redirect form to Vercel
-        const callbackForm = document.getElementById("redirect-form");
-        callbackForm.action = CONFIG.VERCEL_CALLBACK_URL; 
-        callbackForm.method = "POST";
-        callbackForm.innerHTML = ""; 
-
-        Object.keys(data).forEach(key => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = key;
-            // Handle nested objects by stringifying them
-            input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
-            callbackForm.appendChild(input);
-        });
-
-        callbackForm.submit();
+        // ... rest of your redirect-form logic ...
 
     } catch (error) {
         console.error('Error:', error);
-        alert("Fetch failed. Check CORS or network.");
-        payButton.disabled = false;
-        payButton.innerText = "Pay";
+        alert("Transaction failed.");
     }
 }
-
 
 // Channel Inquiry function
 function channel() {
@@ -95,7 +67,7 @@ function channel() {
     });
 
     // Calling from CONFIG
-    fetch(`${CONFIG.GET_CHANNEL_URL}?${params.toString()}`)
+    fetch(`${CONFIG.GET_CHANNEL}?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             const tbody = document.getElementById('table-body');
@@ -115,7 +87,7 @@ async function mkReq() {
     });
 
     try {
-        const response = await fetch(CONFIG.KEY_EXCHANGE_URL, { // Calling from CONFIG
+        const response = await fetch(CONFIG.PAG_KEY_EXCHANGE, { // Calling from CONFIG
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: raw
@@ -138,7 +110,7 @@ async function mpi_mkReq() {
     });
 
     try {
-        const response = await fetch(CONFIG.MPI_KEY_EXCHANGE_URL, { // Use CONFIG here
+        const response = await fetch(CONFIG.MPI_KEY_EXCHANGE, { // Use CONFIG here
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: raw
