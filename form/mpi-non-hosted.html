@@ -72,8 +72,13 @@
             <option value=""></option>
             <option value="Y">Y</option>
         </select>
-			
-			
+		
+	<label for="MPI_RECURR_FREQ">MPI_RECURR_FREQ:</label>
+    <input type="text" name="MPI_RECURR_FREQ" maxlength="d4" >
+	
+    <label for="MPI_RECURR_EXPIRY">MPI_RECURR_EXPIRY (YYYYMMDD):</label>
+    <input type="text" name="MPI_RECURR_EXPIRY" maxlength="8" >
+	    			
 	<label for="MPI_MAC"> MPI_MAC (Signed MAC):</label>
     <textarea name="MPI_MAC" maxlength="344" rows="5" cols="90" ></textarea>
 	
@@ -278,7 +283,9 @@ async function mkReq() {
                 document.forms["form"]["MPI_PURCH_CURR"].value +
                 document.forms["form"]["MPI_PURCH_AMT"].value +
                 document.forms["form"]["MPI_RESPONSE_TYPE"].value +
-                document.forms["form"]["MPI_ADDITIONAL_INFO_IND"].value;
+                document.forms["form"]["MPI_ADDITIONAL_INFO_IND"].value+
+                document.forms["form"]["MPI_RECURR_FREQ"].value+
+                document.forms["form"]["MPI_RECURR_EXPIRY"].value;
         
             document.getElementById("mac").value = rawString;
         
