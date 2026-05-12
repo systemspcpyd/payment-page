@@ -10,7 +10,6 @@
 <body> 
     <div class="controls">
         <form id="form" method="post" action="">
-            <input type="hidden" name="MPI_RETURN_URL" id="MPI_RETURN_URL" value="">
 
             <label for="MPI_TRANS_TYPE">MPI_TRANS_TYPE (Transaction Type):</label>
             <select name="MPI_TRANS_TYPE" id="MPI_TRANS_TYPE">
@@ -35,13 +34,9 @@
             <label for="MPI_PURCH_AMT">MPI_PURCH_AMT (Amount):</label>
             <input type="text" name="MPI_PURCH_AMT" id="MPI_PURCH_AMT" maxlength="19">
 
-            <label for="MPI_RESPONSE_TYPE">MPI_RESPONSE_TYPE:</label>
-            <select name="MPI_RESPONSE_TYPE" id="MPI_RESPONSE_TYPE">
-                <option value=""></option>
-                <option value="JSON">JSON</option>
-                <option value="STRING">STRING</option>
-            </select>
-            
+            <input type="hidden" name="MPI_RETURN_URL" id="MPI_RETURN_URL" value="">
+			<input type="hidden" name="MPI_RESPONSE_TYPE" id="MPI_RESPONSE_TYPE" value = ''>
+			
             <label for="MPI_MAC">MPI_MAC (Signed MAC) :</label>
             <textarea name="MPI_MAC" id="MPI_MAC" maxlength="344" rows="5" cols="100"></textarea>
         </form>
