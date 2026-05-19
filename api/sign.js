@@ -1,40 +1,24 @@
 // api/sign.js
 import crypto from 'crypto';
 
-// --- Disable Next.js Auto Parsing to capture raw Docker/k6 streams ---
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-// Helper function to buffer the raw stream from the incoming network socket
-async function getRawBody(readable) {
-  const chunks = [];
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks).toString('utf-8');
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    // Read the raw text directly from the request stream
-    const rawBody = await getRawBody(req);
+    // Relying on the baseline working body interpretation logic
     let payloadText = '';
-
-    // Parse out our string safely regardless of how k6 packaged the payload
-    if (rawBody) {
-      try {
-        const parsed = JSON.parse(rawBody);
-        payloadText = parsed.text || '';
-      } catch (e) {
-        // If k6 sent it as plain text instead of JSON, use the raw body directly
-        payloadText = rawBody;
+    if (req.body) {
+      if (typeof req.body === 'string') {
+        try {
+          const parsed = JSON.parse(req.body);
+          payloadText = parsed.text;
+        } catch (e) {
+          payloadText = req.body;
+        }
+      } else if (typeof req.body === 'object') {
+        payloadText = req.body.text;
       }
     }
 
@@ -42,7 +26,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing payload text string to sign' });
     }
 
-    // Your pure Base64 Private Key payload
     const rawBase64Key = 
       "MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md" +
       "4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxV" +
@@ -70,21 +53,28 @@ export default async function handler(req, res) {
       "gju9FJkwjce29Bmt7xbFYRvIfVUGbuvMxvgBJG4A2BG8wrFbIGDLQEk5VYBvSkKK" +
       "hniCoSnVEJYlfgyp9ri1vEgXrX18FwY1KADRc4EnDlEzwkkAAl0=";
 
+    // Standard formatting wrapper
     const privatePemKey = `-----BEGIN RSA PRIVATE KEY-----\n${rawBase64Key}\n-----END RSA PRIVATE KEY-----`;
 
-    // Sign using native crypto
+    // Passing explicit object parameters to crypto to match exact PKCS#1 padding requirements
+    const privateKeyObject = crypto.createPrivateKey({
+      key: privatePemKey,
+      format: 'pem',
+      type: 'pkcs1' 
+    });
+
     const signer = crypto.createSign('RSA-SHA256');
     signer.update(payloadText);
     signer.end();
 
-    const signatureBase64 = signer.sign(privatePemKey, 'base64');
+    const signatureBase64 = signer.sign(privateKeyObject, 'base64');
 
-    const base64Url = signatureBase64
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+    // Convert Base64 safely to regular URL format but PRESERVE alternative variables for fast debugging
+    const base64UrlStandard = signatureBase64.replace(/\+/g, '-').replace(/\//g, '_');
+    const base64UrlUnpadded = base64UrlStandard.replace(/=/g, '');
 
-    return res.status(200).json({ mpiMac: base64Url });
+    // Return the unpadded version as default, but we can instantly switch if needed
+    return res.status(200).json({ mpiMac: base64UrlUnpadded });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
