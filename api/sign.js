@@ -1,7 +1,7 @@
 // api/sign.js
-const { KJUR, hextob64 } = require('jsrsasign');
+import crypto from 'crypto';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Guard against non-POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -14,8 +14,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing payload text string to sign' });
     }
 
-    // Your pure Base64 Private Key payload
-    const cleanKey = "MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md" +
+    // Your pure Base64 Private Key payload formatted for Node's native signer
+    const rawBase64Key = 
+      "MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md" +
       "4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxV" +
       "iWe1dzG5TQakJ/i8ZOQuUYFJg02RcwUTzE3ty+x7mkwj9t2wAdRqTagyaDIAVMTx" +
       "P/Y4AS76xjA3aH43Q0HKHGAxxIlXBIQxImuPhlUbPtVtTHIsUwkIx2BDh8kPZ3Mg" +
@@ -41,14 +42,19 @@ module.exports = async function handler(req, res) {
       "gju9FJkwjce29Bmt7xbFYRvIfVUGbuvMxvgBJG4A2BG8wrFbIGDLQEk5VYBvSkKK" +
       "hniCoSnVEJYlfgyp9ri1vEgXrX18FwY1KADRc4EnDlEzwkkAAl0=";
 
-    // Run your exact frontend signing engine logic safely inside Node
-    let sig = new KJUR.crypto.Signature({ "alg": "SHA256withRSA" });
-    sig.init(cleanKey);
-    sig.updateString(text);
-    let sigValueHex = sig.sign();
+    // Wrap it back into a valid PEM format string automatically
+    const privatePemKey = `-----BEGIN RSA PRIVATE KEY-----\n${rawBase64Key}\n-----END RSA PRIVATE KEY-----`;
 
-    // Standard Base64URL transformation
-    let base64Url = hextob64(sigValueHex)
+    // Sign the incoming raw string using Node's built-in crypto module (SHA256withRSA)
+    const signer = crypto.createSign('RSA-SHA256');
+    signer.update(text);
+    signer.end();
+
+    // Generate standard Base64 string directly
+    const signatureBase64 = signer.sign(privatePemKey, 'base64');
+
+    // Convert Base64 safely to Base64URL formatting
+    const base64Url = signatureBase64
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=/g, '');
@@ -57,4 +63,4 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-};
+}
