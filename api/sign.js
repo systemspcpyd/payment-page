@@ -1,37 +1,45 @@
 // api/sign.js
 import crypto from 'crypto';
 
+// --- Disable Next.js Auto Parsing to capture raw Docker/k6 streams ---
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// Helper function to buffer the raw stream from the incoming network socket
+async function getRawBody(readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks).toString('utf-8');
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    // --- Defensive Body Parsing ---
+    // Read the raw text directly from the request stream
+    const rawBody = await getRawBody(req);
     let payloadText = '';
-    
-    if (req.body) {
-      if (typeof req.body === 'string') {
-        try {
-          const parsed = JSON.parse(req.body);
-          payloadText = parsed.text;
-        } catch (e) {
-          // If it's a string but not JSON, fallback to treating the string as the text itself
-          payloadText = req.body;
-        }
-      } else if (typeof req.body === 'object') {
-        payloadText = req.body.text;
+
+    // Parse out our string safely regardless of how k6 packaged the payload
+    if (rawBody) {
+      try {
+        const parsed = JSON.parse(rawBody);
+        payloadText = parsed.text || '';
+      } catch (e) {
+        // If k6 sent it as plain text instead of JSON, use the raw body directly
+        payloadText = rawBody;
       }
     }
 
-    console.log("Received payload text to sign:", payloadText);
-
     if (!payloadText) {
-      return res.status(400).json({ 
-        error: 'Missing payload text string to sign',
-        receivedBodyType: typeof req.body,
-        receivedBody: req.body 
-      });
+      return res.status(400).json({ error: 'Missing payload text string to sign' });
     }
 
     // Your pure Base64 Private Key payload
@@ -78,7 +86,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ mpiMac: base64Url });
   } catch (error) {
-    console.error("Signing handler caught an error:", error);
     return res.status(500).json({ error: error.message });
   }
 }
