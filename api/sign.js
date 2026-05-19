@@ -2,19 +2,39 @@
 import crypto from 'crypto';
 
 export default async function handler(req, res) {
-  // Guard against non-POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const { text } = req.body;
+    // --- Defensive Body Parsing ---
+    let payloadText = '';
     
-    if (!text) {
-      return res.status(400).json({ error: 'Missing payload text string to sign' });
+    if (req.body) {
+      if (typeof req.body === 'string') {
+        try {
+          const parsed = JSON.parse(req.body);
+          payloadText = parsed.text;
+        } catch (e) {
+          // If it's a string but not JSON, fallback to treating the string as the text itself
+          payloadText = req.body;
+        }
+      } else if (typeof req.body === 'object') {
+        payloadText = req.body.text;
+      }
     }
 
-    // Your pure Base64 Private Key payload formatted for Node's native signer
+    console.log("Received payload text to sign:", payloadText);
+
+    if (!payloadText) {
+      return res.status(400).json({ 
+        error: 'Missing payload text string to sign',
+        receivedBodyType: typeof req.body,
+        receivedBody: req.body 
+      });
+    }
+
+    // Your pure Base64 Private Key payload
     const rawBase64Key = 
       "MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md" +
       "4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxV" +
@@ -42,18 +62,15 @@ export default async function handler(req, res) {
       "gju9FJkwjce29Bmt7xbFYRvIfVUGbuvMxvgBJG4A2BG8wrFbIGDLQEk5VYBvSkKK" +
       "hniCoSnVEJYlfgyp9ri1vEgXrX18FwY1KADRc4EnDlEzwkkAAl0=";
 
-    // Wrap it back into a valid PEM format string automatically
     const privatePemKey = `-----BEGIN RSA PRIVATE KEY-----\n${rawBase64Key}\n-----END RSA PRIVATE KEY-----`;
 
-    // Sign the incoming raw string using Node's built-in crypto module (SHA256withRSA)
+    // Sign using native crypto
     const signer = crypto.createSign('RSA-SHA256');
-    signer.update(text);
+    signer.update(payloadText);
     signer.end();
 
-    // Generate standard Base64 string directly
     const signatureBase64 = signer.sign(privatePemKey, 'base64');
 
-    // Convert Base64 safely to Base64URL formatting
     const base64Url = signatureBase64
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
@@ -61,6 +78,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ mpiMac: base64Url });
   } catch (error) {
+    console.error("Signing handler caught an error:", error);
     return res.status(500).json({ error: error.message });
   }
 }
