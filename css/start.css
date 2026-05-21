@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SS Dashboard - Tool View</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; 
+            padding: 20px;
+            background-color: #121212; 
+            color: #e0e0e0;
+        }
+
+        /* Header Layout */
+        .top-header {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+        }
+
+        .top-header h1 { margin: 0; font-size: 1.5rem; }
+
+        .btn-back {
+            background-color: #333;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover { background-color: #444; }
+
+        /* --- CORE STYLES --- */
+        .container {
+            display: flex;
+            width: 100%;
+            height: 75vh; 
+            gap: 20px;
+        }
+
+        .left-panel, .right-panel {
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            min-width: 0; 
+        }
+
+        #left-container, .right-panel embed, .right-panel object {
+            border: 1px solid #333;
+            background-color: #1e1e1e;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .right-panel embed { height: 100px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <h1>System Specialist Dashboard</h1>
+        <a href="index.html" class="btn-back">Back to Dashboard</a>
+    </header>
+
+    <div class="container">
+        <div class="left-panel">
+            <div id="left-container">
+                <!-- Content Here -->
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="file-content">
+                <embed src="path/to/key.key">
+            </div>
+            <div class="static-content">
+                <object data="path/to/tool.html"></object>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
