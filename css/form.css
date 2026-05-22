@@ -181,3 +181,8 @@ body {
     font-weight: bold;
     margin-right: 5px;
 }
+
+/* This ensures the content inside the iframe knows to fill the space */
+iframe.pane {
+    height: 100% !important;
+}
