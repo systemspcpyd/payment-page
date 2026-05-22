@@ -5,7 +5,7 @@ html, body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f4f9;
-    overflow: hidden; /* Locks the main window; scrolling happens inside iframes */
+    overflow: hidden; /* Locks the main dashboard window */
 }
 
 /* --- 2. Dashboard Layout (The Main Split) --- */
@@ -24,7 +24,7 @@ html, body {
     flex-direction: column; /* Stacks header (label-bar) on top of the iframe */
     flex: 1;                /* Splits width 50/50 */
     height: 100%;           /* Forces column to full dashboard height */
-    overflow: hidden;       /* Keeps the wrapper fixed; only the iframe inside scrolls */
+    overflow: hidden;       /* Keeps the wrapper fixed */
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -48,15 +48,22 @@ html, body {
     letter-spacing: 0.5px;
 }
 
+/* UPDATED: Added overflow-y: auto to allow independent scrolling */
 .pane {
     flex-grow: 1;           /* Iframe takes all remaining vertical space */
     width: 100%;
     border: none;
     background: #ffffff;
-    /* Independent scrolling is handled by the iframe content itself */
+    overflow-y: auto;       /* Enables the vertical scrollbar inside the iframe */
+    display: block;
 }
 
 /* --- 3. Form Controls Styling (Inside the iframes) --- */
+/* UPDATED: Added min-height to ensure the body can expand */
+body {
+    min-height: 100%;
+}
+
 .controls {
     padding: 20px;
     box-sizing: border-box;
@@ -80,10 +87,10 @@ html, body {
     padding: 10px;
     border: 1px solid #aaa;
     border-radius: 4px;
-    margin-bottom: 25px; /* Vertical spacing between fields */
+    margin-bottom: 25px;
     background-color: white !important;
     color: #333 !important;
-    font-family: 'Consolas', 'Monaco', monospace; /* Mono font is better for keys/IDs */
+    font-family: 'Consolas', 'Monaco', monospace;
     font-size: 14px;
 }
 
@@ -110,7 +117,7 @@ html, body {
 .credit-card-container {
     position: relative;
     width: 400px; 
-    height: 250px; /* Fixed height for consistency */
+    height: 250px;
     margin: 10px auto 30px auto;
     background: linear-gradient(135deg, #222 0%, #000 100%); 
     border-radius: 15px; 
@@ -118,7 +125,6 @@ html, body {
     overflow: hidden; 
 }
 
-/* The Gold Chip */
 .credit-card-container::before {
     content: '';
     position: absolute;
@@ -135,14 +141,13 @@ html, body {
     color: #fff !important; 
     border: none !important;
     padding: 5px !important; 
-    margin-bottom: 0 !important; /* Overrides the general 25px spacing */
+    margin-bottom: 0 !important;
     z-index: 2; 
     font-family: 'Courier New', Courier, monospace; 
     caret-color: white; 
     -webkit-text-fill-color: #ffffff !important; 
 }
 
-/* Card Field Positioning */
 .card-number-input { top: 60%; left: 8%; width: 85%; font-size: 22px; letter-spacing: 2px; }
 .name-input { top: 82%; left: 8%; width: 50%; font-size: 13px; text-transform: uppercase; }
 .expiry-input { top: 82%; left: 60%; width: 15%; font-size: 13px; text-align: center; }
