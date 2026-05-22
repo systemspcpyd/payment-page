@@ -5,7 +5,7 @@ html, body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f4f9;
-    overflow: hidden; /* Locks the main dashboard window */
+    /*overflow: hidden;  Locks the main dashboard window */
 }
 
 /* --- 2. Dashboard Layout (The Main Split) --- */
