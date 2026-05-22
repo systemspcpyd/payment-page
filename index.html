@@ -30,13 +30,25 @@
                 id="left-container"
                 name="formDisplay"
                 src="about:blank"
-                title="Embedded Form Display">
+                title="Embedded Form Display"
+                onload="resizeIframe(this)">
                 Sorry, your browser does not support iframes.
             </iframe>
         </div>
 
     </div>
 
+    <script>
+    function resizeIframe(obj) {
+        // We wrap in a try-catch to handle cross-origin security restrictions
+        try {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+        } catch (e) {
+            console.warn("Could not resize iframe due to cross-origin policy.");
+        }
+    }
+</script>
+    
 </body>
 </html>
 
