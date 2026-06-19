@@ -109,34 +109,51 @@
             }
         }
 
-        function channel() {
-            const params = new URLSearchParams({
-                "MPI_MERC_ID": document.forms["form"]["MPI_MERC_ID"].value,
-                "MPI_TRXN_ID": document.forms["form"]["MPI_TRXN_ID"].value,
-                "MPI_MAC": document.forms["form"]["MPI_MAC"].value
-            });
-
-            fetch(`${GET_CHANNEL_URL}?${params.toString()}`)
-                .then(res => res.json())
-                .then(data => {
-                    const tbody = document.getElementById('table-body');
-                    const container = document.getElementById('response-container');
-                    tbody.innerHTML = "";
-                    if (data.MPI_PAYMENT_CHANNEL_LIST) {
-                        container.style.display = 'block';
-                        data.MPI_PAYMENT_CHANNEL_LIST.forEach(category => {
-                            category.MPI_PAYMENT_CHANNEL.forEach(item => {
-                                let row = tbody.insertRow();
-                                row.insertCell(0).textContent = item.MPI_CHANNEL_NAME;
-                                row.insertCell(1).textContent = item.MPI_CHANNEL_ID;
-                                row.insertCell(2).textContent = item.MPI_CHANNEL_STATUS === 'A' ? "Active" : "Offline";
-                            });
+         function channel() {
+                    const params = new URLSearchParams({
+                        "MPI_MERC_ID": document.forms["form"]["MPI_MERC_ID"].value,
+                        "MPI_TRXN_ID": document.forms["form"]["MPI_TRXN_ID"].value,
+                        "MPI_MAC": document.forms["form"]["MPI_MAC"].value
+                    });
+        
+                    fetch(`${GET_CHANNEL_URL}?${params.toString()}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const tbody = document.getElementById('table-body');
+                            const container = document.getElementById('response-container');
+                            tbody.innerHTML = "";
+                            
+                            if (data.MPI_PAYMENT_CHANNEL_LIST) {
+                                container.style.display = 'block';
+        
+                                // Define custom sort order
+                                const order = { "DNQR": 1, "EWALLETS": 2, "FPX": 3 };
+        
+                                // Sort the list based on the predefined order
+                                const sortedList = data.MPI_PAYMENT_CHANNEL_LIST.sort((a, b) => {
+                                    return (order[a.MPI_PAYMENT_METHOD] || 99) - (order[b.MPI_PAYMENT_METHOD] || 99);
+                                });
+        
+                                sortedList.forEach(category => {
+                                    // Add a header row for the Payment Method
+                                    let headerRow = tbody.insertRow();
+                                    headerRow.style.backgroundColor = "#e9ecef";
+                                    let cell = headerRow.insertCell(0);
+                                    cell.colSpan = 3;
+                                    cell.innerHTML = `<strong>${category.MPI_PAYMENT_METHOD}</strong>`;
+        
+                                    category.MPI_PAYMENT_CHANNEL.forEach(item => {
+                                        let row = tbody.insertRow();
+                                        row.insertCell(0).textContent = item.MPI_CHANNEL_NAME;
+                                        row.insertCell(1).textContent = item.MPI_CHANNEL_ID;
+                                        row.insertCell(2).textContent = item.MPI_CHANNEL_STATUS === 'A' ? "Active" : "Offline";
+                                    });
+                                });
+                            } else {
+                                alert("No channels found: " + (data.MPI_ERROR_DESC || "Unknown Error"));
+                            }
                         });
-                    } else {
-                        alert("No channels: " + (data.MPI_ERROR_DESC || "Unknown Error"));
-                    }
-                });
-        }
+                }
 
         function clear_mac() {
             let rawString = document.forms["form"]["MPI_MERC_ID"].value + document.forms["form"]["MPI_TRXN_ID"].value;
