@@ -100,7 +100,7 @@
                     clear_mac();
                     return true;
                 } else {
-                    alert(`Key Exchange Failed\n\nError Code: ${result.errorCode}\nMessage: ${result.errorDesc || result.errorMessage || "Unknown Error"}`);
+                    alert(`❌ Key Exchange Failed\n\nError Code: ${result.errorCode}\nMessage: ${result.errorDesc || result.errorMessage || "Unknown Error"}`);
                     return false;
                 }
             } catch (error) {
