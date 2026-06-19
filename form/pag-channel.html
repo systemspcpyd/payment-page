@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Payment Channel Gateway</title>
     <link rel="stylesheet" href="../css/form.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.27/jsrsasign-all-min.js"></script>
 </head>
@@ -15,10 +16,10 @@
             <input type="text" name="MPI_TRXN_ID" id="MPI_TRXN_ID" maxlength="20">
 
             <label for="MPI_MAC">MPI_MAC (Signed MAC):</label>
-            <textarea name="MPI_MAC" id="MPI_MAC" maxlength="344" rows="5" cols="100"></textarea>
+            <textarea name="MPI_MAC" id="MPI_MAC" maxlength="344" rows="3"></textarea>
         </form>
 
-        <button onclick="refreshData()" style="padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">
+         <button onclick="refreshData()" style="padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">
             Refresh Payment Channels
         </button>
 
@@ -69,26 +70,23 @@
         hniCoSnVEJYlfgyp9ri1vEgXrX18FwY1KADRc4EnDlEzwkkAAl0=
         -----END RSA PRIVATE KEY-----`;
 
-        // Unified flow function
         async function refreshData() {
-            // Update Transaction ID for fresh request
             let d = new Date();
             let y = "GETCNL" + d.getFullYear() + (d.getMonth() + 1).toString().padStart(2, '0') + d.getDate().toString().padStart(2, '0') + d.getHours().toString().padStart(2, '0') + d.getMinutes().toString().padStart(2, '0') + d.getSeconds().toString().padStart(2, '0');
             document.forms["form"]["MPI_TRXN_ID"].value = y;
 
             const success = await mkReq();
-            if (success) {
-                channel();
-            }
+            if (success) channel();
         }
 
-        // Auto-run on load
         window.addEventListener("load", refreshData);
 
         async function mkReq() {
-            let MID = document.forms["form"]["MPI_MERC_ID"].value;
-            let transactionID = document.forms["form"]["MPI_TRXN_ID"].value;
-            const raw = JSON.stringify({ "merchantId": MID, "pubKey": PUBLICKEY, "purchaseId": transactionID });
+            const raw = JSON.stringify({ 
+                "merchantId": document.forms["form"]["MPI_MERC_ID"].value, 
+                "pubKey": PUBLICKEY, 
+                "purchaseId": document.forms["form"]["MPI_TRXN_ID"].value 
+            });
 
             try {
                 const response = await fetch(KEY_EXCHANGE_URL, {
@@ -97,14 +95,16 @@
                     body: raw
                 });
                 const result = await response.json();
+                
                 if (result.errorCode === "000") {
                     clear_mac();
                     return true;
+                } else {
+                    alert(`Key Exchange Failed\n\nError Code: ${result.errorCode}\nMessage: ${result.errorDesc || result.errorMessage || "Unknown Error"}`);
+                    return false;
                 }
-                alert("Key Exchange Failed: " + (result.errorMessage || "Unknown Error"));
-                return false;
             } catch (error) {
-                alert("Connection Error during Key Exchange");
+                alert("Connection Error during Key Exchange.");
                 return false;
             }
         }
@@ -133,7 +133,7 @@
                             });
                         });
                     } else {
-                        alert("No channels returned: " + (data.MPI_ERROR_DESC || "Unknown Error"));
+                        alert("No channels: " + (data.MPI_ERROR_DESC || "Unknown Error"));
                     }
                 });
         }
