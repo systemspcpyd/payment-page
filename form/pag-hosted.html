@@ -204,7 +204,7 @@ try {
                 if (result.errorCode === "000") {
                     alert(`✅ Success!\nCode: ${result.errorCode}\nMessage: ${result.errorMessage || 'Key Exchange successful.'}`);
                 } else {
-                    alert(`❌ Key Exchange Failed\nError Code: ${result.errorCode}\nMessage: ${result.errorMessage || 'Error'}`);
+                    alert(`❌ Key Exchange Failed\nError Code: ${result.errorCode}\nMessage: ${result.errorDesc || result.errorMessage || "Unknown Error"}`);
                 }
             } catch (error) {
                 console.error('Error:', error);
