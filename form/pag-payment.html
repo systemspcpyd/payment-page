@@ -18,6 +18,10 @@
                 <option value="INITRECURR">INITRECURR</option>
                 <option value="PRERECURR">PRERECURR</option>
                 <option value="PREAUTH">PREAUTH</option>
+				<option value="VSALES">VSALES</option>
+             	<option value="REFUND">REFUND</option>
+            	<option value="RECURR">RECURR</option>
+            	<option value="INQ">INQ</option>
             </select>
 
             <label for="MPI_MERC_ID">MPI_MERC_ID (MID):</label>
@@ -28,6 +32,9 @@
 
             <label for="MPI_TRXN_ID">MPI_TRXN_ID (Transaction ID):</label>
             <input type="text" name="MPI_TRXN_ID" id="MPI_TRXN_ID" maxlength="20">
+
+            <label for="MPI_ORI_TRXN_ID">MPI_ORI_TRXN_ID (Original Transaction ID):</label>
+            <input type="text" name="MPI_ORI_TRXN_ID" id="MPI_ORI_TRXN_ID" maxlength="20" >
 
             <label for="MPI_PURCH_CURR">MPI_PURCH_CURR (Currency: MYR only):</label>
             <input type="text" name="MPI_PURCH_CURR" id="MPI_PURCH_CURR" value='458' maxlength="3">
@@ -234,6 +241,7 @@ try {
                 document.forms["form"]["MPI_TRANS_TYPE"].value + 
                 document.forms["form"]["MPI_MERC_ID"].value + 
                 document.forms["form"]["MPI_TRXN_ID"].value +
+                document.forms["form"]["MPI_ORI_TRXN_ID"].value +
                 document.forms["form"]["MPI_PURCH_DATE"].value +
                 document.forms["form"]["MPI_PURCH_CURR"].value +
                 document.forms["form"]["MPI_PURCH_AMT"].value +
