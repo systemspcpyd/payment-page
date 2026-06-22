@@ -65,7 +65,16 @@
             <option value=""></option>
             <option value="Y">Y</option>
         </select>
-		
+	
+	<label for="MPI_EMAIL">MPI_EMAIL (Email):</label>
+    <input type="text" name="MPI_EMAIL" value = 'systemspc@paydee.co' maxlength="254" >
+
+	<label for="MPI_MOBILE_PHONE_CC">MPI_MOBILE_PHONE_CC (Country Code):</label>
+    <input type="text" name="MPI_MOBILE_PHONE_CC" value = '60' maxlength="3" >	 
+
+	<label for="MPI_MOBILE_PHONE">MPI_MOBILE_PHONE (Phone No):</label>
+    <input type="text" name="MPI_MOBILE_PHONE" value = '123456789' maxlength="15" >	 
+	 
 	<label for="MPI_RECURR_FREQ">MPI_RECURR_FREQ:</label>
     <input type="text" name="MPI_RECURR_FREQ" maxlength="d4" >
 	
@@ -277,6 +286,9 @@ async function mkReq() {
                 document.forms["form"]["MPI_PURCH_DATE"].value +
                 document.forms["form"]["MPI_PURCH_CURR"].value +
                 document.forms["form"]["MPI_PURCH_AMT"].value +
+                document.forms["form"]["MPI_EMAIL"].value +
+                document.forms["form"]["MPI_MOBILE_PHONE"].value +
+                document.forms["form"]["MPI_MOBILE_PHONE_CC"].value +
                 document.forms["form"]["MPI_ADDITIONAL_INFO_IND"].value+
                 document.forms["form"]["MPI_RECURR_FREQ"].value+
                 document.forms["form"]["MPI_RECURR_EXPIRY"].value;
