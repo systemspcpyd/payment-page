@@ -19,6 +19,7 @@ graph LR
     Index --> Dummy[mpigwv2.html]
     Dummy --> Target3[devlinkv2.paydee.co/mpigwv2]
 
-    style Target1 fill:#f9f,stroke:#333
-    style Target2 fill:#bbf,stroke:#333
-    style Target3 fill:#bbf,stroke:#333
+    %% Styling all targets to dark blue
+    style Target1 fill:#00008B,stroke:#fff,color:#fff
+    style Target2 fill:#00008B,stroke:#fff,color:#fff
+    style Target3 fill:#00008B,stroke:#fff,color:#fff
