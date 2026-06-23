@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     User[User Clicks Link] --> |"target='formDisplay'"| Router{Browser Engine}
     Router --> |"Updates src"| IFrame[iframe id='left-container']
