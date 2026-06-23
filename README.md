@@ -31,7 +31,7 @@ graph LR
 ```
 
 ## Response Flowchart Diagram
-*The high-level navigation and iframe routing logic when receive response.*
+*The high-level navigation and iframe routing logic for response.*
 
 ```mermaid
 graph LR
