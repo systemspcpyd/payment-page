@@ -1,6 +1,5 @@
 # Project Architecture
-
-This documentation provides a visual overview of our payment UAT system.
+This documentation provides a visual overview of our payment UAT page.
 
 ## Flowchart Diagram
 *The high-level navigation and iframe routing logic.*
@@ -30,6 +29,9 @@ graph LR
     style Target2 fill:#00008B,stroke:#fff,color:#fff
     style Target3 fill:#00008B,stroke:#fff,color:#fff
 ```
+
+## Response Flowchart Diagram
+*The high-level navigation and iframe routing logic when receive response.*
 
 ```mermaid
 graph LR
