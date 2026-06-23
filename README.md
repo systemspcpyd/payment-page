@@ -34,8 +34,6 @@ graph LR
 *The high-level navigation and iframe routing logic for response.*
 
 ```mermaid
-## Response Flowchart
-```mermaid
 graph LR
     Callback["payment-page-virid.vercel.app/api/callback"] --> API_JS["/api/callback.js"]
     
