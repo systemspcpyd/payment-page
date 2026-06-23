@@ -34,23 +34,36 @@ graph LR
 *The high-level navigation and iframe routing logic for response.*
 
 ```mermaid
+## Response Flowchart
+```mermaid
 graph LR
     Callback["payment-page-virid.vercel.app/api/callback"] --> API_JS["/api/callback.js"]
     
     API_JS --> IfPOST{"if POST"}
-    IfPOST --> QR["MPI_QR_CODE"]
-    IfPOST --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
-    IfPOST --> URL_ONLY["MPI_REDIRECT_URL"]
-
-    %% Else/Fallback condition
-    IfPOST -- "else" --> Status["/payment-status.html"]
-    
-    QR --> R3["/form/redirect/redirect-03.html"]
-    DATA --> R1["/form/redirect/redirect-01.html"]
-    URL_ONLY --> R2["/form/redirect/redirect-02.html"]
-    
     API_JS --> IfGET{"if GET"}
-    IfGET --> StatusQuery["/payment-status.html?queryParams"]
+    
+    %% Branching logic
+    IfPOST -- "contains QR" --> QR["MPI_QR_CODE"]
+    IfPOST -- "contains DATA" --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
+    IfPOST -- "contains URL" --> URL_ONLY["MPI_REDIRECT_URL"]
+    IfPOST -- "else" --> StatusPOST["/payment-status.html"]
+    
+    IfGET --> StatusGet["/payment-status.html?queryParams"]
+    
+    %% Subgraph to force horizontal alignment of all end-nodes
+    subgraph Final_Destinations [Redirects & Status]
+        direction LR
+        R3["/form/redirect/redirect-03.html"]
+        R1["/form/redirect/redirect-01.html"]
+        R2["/form/redirect/redirect-02.html"]
+        StatusPOST
+        StatusGet
+    end
+    
+    %% Connections to the aligned subgraph
+    QR --> R3
+    DATA --> R1
+    URL_ONLY --> R2
 
 
 ```
