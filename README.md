@@ -39,7 +39,7 @@ graph LR
     
     API_JS --> IfPOST{"if POST"}
     IfPOST --> QR["MPI_QR_CODE"]
-    IfPOST --> DATA["MPI_REDIRECT_URL and DATA"]
+    IfPOST --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
     IfPOST --> URL_ONLY["MPI_REDIRECT_URL"]
     IfPOST --> Status["/payment-status.html"]
     
