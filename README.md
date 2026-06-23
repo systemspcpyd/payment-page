@@ -25,11 +25,11 @@ graph LR
     
     PAG_Hosted --> Target2
     Dummy --> Target3["DUMMY PAG<br/>devlinkv2.paydee.co/mpigwv2"]
-```
+
     style Target1 fill:#00008B,stroke:#fff,color:#fff
     style Target2 fill:#00008B,stroke:#fff,color:#fff
     style Target3 fill:#00008B,stroke:#fff,color:#fff
-
+```
 
 ```mermaid
 graph LR
