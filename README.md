@@ -1,36 +1,46 @@
 ```mermaid
 graph LR
-    %% Main Entry
+    %% Entry Point
     URL --> Index[index.html]
     
-    %% Navigation Layer
+    %% Navigation
     Index --> MPI[index-mpi-non-hosted.html]
     Index --> PAG_Non[index-pag-non-hosted.html]
     Index --> PAG_Hosted[pag-hosted.html]
     Index --> Dummy[mpigwv2.html]
     
-    %% Iframe Logic
+    %% MPI Path
     MPI --> MPI_L[left: mpi-non-hosted.html]
-    MPI --> MPI_R[right: test-card.html]
+    MPI_L --> Target1[devlink.paydee.co/mpi]
+    Target1 --> MPI_QR{MPI_QR_CODE}
+    MPI_QR --> Redirect03[/form/redirect/redirect-03.html]
+    Target1 --> MPI_Redirect{MPI_REDIRECT_URL/DATA}
+    MPI_Redirect --> Redirect01[/form/redirect/redirect-01.html]
+    MPI_Redirect --> Redirect02[/form/redirect/redirect-02.html]
+    
+    %% PAG Path
     PAG_Non --> PAG_L[left: pag-channel.html]
     PAG_Non --> PAG_R[right: pag-payment.html]
-    
-    %% Target Alignment Layer
-    subgraph Targets [Payment Gateways]
-        direction LR
-        Target1[devlink.paydee.co/mpi]
-        Target2[devlinkv2.paydee.co/mpigw]
-        Target3[devlinkv2.paydee.co/mpigwv2]
-    end
-    
-    %% Connecting to Targets
-    MPI_L --> Target1
-    PAG_L --> Target2
+    PAG_L --> Target2[devlinkv2.paydee.co/mpigw]
     PAG_R --> Target2
     PAG_Hosted --> Target2
-    Dummy --> Target3
+    
+    %% Callback Logic
+    Target2 --> Callback[payment-page-virid.vercel.app/api/callback]
+    Callback --> API_JS[api/callback.js]
+    
+    API_JS --> IfPOST{if POST}
+    IfPOST --> Redirect01
+    IfPOST --> Redirect02
+    IfPOST --> StatusElse[/payment-status.html]
+    
+    API_JS --> IfGET{if GET}
+    IfGET --> StatusGet[/payment-status.html?queryParams]
 
-    %% Dark Blue Styling
+    %% Dummy Path
+    Dummy --> Target3[devlinkv2.paydee.co/mpigwv2]
+
+    %% Styling
     style Target1 fill:#00008B,stroke:#fff,color:#fff
     style Target2 fill:#00008B,stroke:#fff,color:#fff
     style Target3 fill:#00008B,stroke:#fff,color:#fff
