@@ -5,6 +5,13 @@ This documentation provides a visual overview of our payment UAT page.
 *The high-level navigation and iframe routing logic.*
 
 ```mermaid
+# Project Architecture
+This documentation provides a visual overview of our payment UAT page.
+
+## Flowchart Diagram
+*The high-level navigation and iframe routing logic.*
+
+```mermaid
 graph LR
     URL --> Index["index.html"]
     
@@ -15,15 +22,23 @@ graph LR
     
     MPI --> MPI_L["left: mpi-non-hosted.html"]
     MPI --> MPI_R["right: test-card.html"]
-    MPI_L --> Target1["MPI<br/>devlink.paydee.co/mpi"]
     
     PAG_Non --> PAG_L["left: pag-channel.html"]
     PAG_Non --> PAG_R["right: pag-payment.html"]
-    PAG_L --> Target2["PAG<br/>devlinkv2.paydee.co/mpigw"]
-    PAG_R --> Target2
     
+    %% Group targets to force horizontal alignment
+    subgraph Gateways [Payment Gateways]
+        direction LR
+        Target1["MPI<br/>devlink.paydee.co/mpi"]
+        Target2["PAG<br/>devlinkv2.paydee.co/mpigw"]
+        Target3["DUMMY PAG<br/>devlinkv2.paydee.co/mpigwv2"]
+    end
+    
+    MPI_L --> Target1
+    PAG_L --> Target2
+    PAG_R --> Target2
     PAG_Hosted --> Target2
-    Dummy --> Target3["DUMMY PAG<br/>devlinkv2.paydee.co/mpigwv2"]
+    Dummy --> Target3
 
     style Target1 fill:#00008B,stroke:#fff,color:#fff
     style Target2 fill:#00008B,stroke:#fff,color:#fff
