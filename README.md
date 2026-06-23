@@ -1,5 +1,6 @@
 ```mermaid
 graph LR
+    %% Main Entry
     URL --> Index["index.html"]
     
     %% Navigation
@@ -8,38 +9,34 @@ graph LR
     Index --> PAG_Hosted["pag-hosted.html"]
     Index --> Dummy["mpigwv2.html"]
     
-    %% MPI Path
-    MPI --> MPI_L["left: mpi-non-hosted.html"]
-    MPI_L --> Target1["devlink.paydee.co/mpi"]
-    Target1 --> MPI_QR{"MPI_QR_CODE"}
-    MPI_QR --> Redirect03["/form/redirect/redirect-03.html"]
-    Target1 --> MPI_Redirect{"MPI_REDIRECT_URL/DATA"}
-    MPI_Redirect --> Redirect01["/form/redirect/redirect-01.html"]
-    MPI_Redirect --> Redirect02["/form/redirect/redirect-02.html"]
+    %% Gateway Targets
+    Target1["devlink.paydee.co/mpi"]
+    Target2["devlinkv2.paydee.co/mpigw"]
+    Target3["devlinkv2.paydee.co/mpigwv2"]
     
-    %% PAG Path
-    PAG_Non --> PAG_L["left: pag-channel.html"]
-    PAG_Non --> PAG_R["right: pag-payment.html"]
-    PAG_L --> Target2["devlinkv2.paydee.co/mpigw"]
-    PAG_R --> Target2
+    %% Branching Logic
+    MPI --> Target1
+    PAG_Non --> Target2
     PAG_Hosted --> Target2
+    Dummy --> Target3
     
-    %% Callback Logic
-    Target2 --> Callback["payment-page-virid.vercel.app/api/callback"]
+    %% Unified Callback Flow
+    Target1 --> Callback["payment-page-virid.vercel.app/api/callback"]
+    Target2 --> Callback
+    Target3 --> Callback
+    
     Callback --> API_JS["/api/callback.js"]
     
+    %% Logic Processing
     API_JS --> IfPOST{"if POST"}
-    IfPOST --> Redirect01
-    IfPOST --> Redirect02
-    IfPOST --> StatusElse["/payment-status.html"]
+    IfPOST --> R1["/redirect-01.html"]
+    IfPOST --> R2["/redirect-02.html"]
+    IfPOST --> Status["/payment-status.html"]
     
     API_JS --> IfGET{"if GET"}
-    IfGET --> StatusGet["/payment-status.html?queryParams"]
+    IfGET --> StatusQuery["/payment-status.html?queryParams"]
 
-    %% Dummy Path
-    Dummy --> Target3["devlinkv2.paydee.co/mpigwv2"]
-
-    %% Styling
+    %% Dark Blue Styling
     style Target1 fill:#00008B,stroke:#fff,color:#fff
     style Target2 fill:#00008B,stroke:#fff,color:#fff
     style Target3 fill:#00008B,stroke:#fff,color:#fff
