@@ -10,7 +10,7 @@ graph LR
     Index --> Dummy["mpigwv2.html"]
     
     %% Gateway Targets with Stacked Labels
-    Target1["devlink.paydee.co/mpi"]
+    Target1["MPI<br/>devlink.paydee.co/mpi"]
     Target2["PAG<br/>devlinkv2.paydee.co/mpigw"]
     Target3["DUMMY PAG<br/>devlinkv2.paydee.co/mpigwv2"]
     
