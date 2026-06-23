@@ -15,7 +15,7 @@ graph LR
     
     MPI --> MPI_L["left: mpi-non-hosted.html"]
     MPI --> MPI_R["right: test-card.html"]
-    MPI_L --> Target1["devlink.paydee.co/mpi"]
+    MPI_L --> Target1["MPI<br/>devlink.paydee.co/mpi"]
     
     PAG_Non --> PAG_L["left: pag-channel.html"]
     PAG_Non --> PAG_R["right: pag-payment.html"]
