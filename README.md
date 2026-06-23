@@ -5,13 +5,6 @@ This documentation provides a visual overview of our payment UAT page.
 *The high-level navigation and iframe routing logic.*
 
 ```mermaid
-# Project Architecture
-This documentation provides a visual overview of our payment UAT page.
-
-## Flowchart Diagram
-*The high-level navigation and iframe routing logic.*
-
-```mermaid
 graph LR
     URL --> Index["index.html"]
     
