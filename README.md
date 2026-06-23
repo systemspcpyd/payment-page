@@ -47,9 +47,9 @@ graph LR
     API_JS --> IfGET{"if GET"}
     
     %% Branching logic
-    IfPOST -- "contains QR" --> QR["MPI_QR_CODE"]
-    IfPOST -- "contains DATA" --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
-    IfPOST -- "contains URL" --> URL_ONLY["MPI_REDIRECT_URL"]
+    IfPOST -- "Response Data" --> QR["MPI_QR_CODE"]
+    IfPOST -- "Response Data" --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
+    IfPOST -- "Response Data" --> URL_ONLY["MPI_REDIRECT_URL"]
     IfPOST -- "else" --> StatusPOST["/payment-status.html"]
     
     IfGET --> StatusGet["/payment-status.html?queryParams"]
