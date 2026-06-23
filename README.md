@@ -9,10 +9,10 @@ graph LR
     Index --> PAG_Hosted["pag-hosted.html"]
     Index --> Dummy["mpigwv2.html"]
     
-    %% Gateway Targets
+    %% Gateway Targets with Stacked Labels
     Target1["devlink.paydee.co/mpi"]
-    Target2["devlinkv2.paydee.co/mpigw"]
-    Target3["devlinkv2.paydee.co/mpigwv2"]
+    Target2["PAG<br/>devlinkv2.paydee.co/mpigw"]
+    Target3["DUMMY PAG<br/>devlinkv2.paydee.co/mpigwv2"]
     
     %% Branching Logic
     MPI --> Target1
