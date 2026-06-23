@@ -41,7 +41,9 @@ graph LR
     IfPOST --> QR["MPI_QR_CODE"]
     IfPOST --> DATA["MPI_REDIRECT_URL <br/> MPI_REDIRECT_HTTP_DATA"]
     IfPOST --> URL_ONLY["MPI_REDIRECT_URL"]
-    IfPOST --> Status["/payment-status.html"]
+
+    %% Else/Fallback condition
+    IfPOST -- "else" --> Status["/payment-status.html"]
     
     QR --> R3["/form/redirect/redirect-03.html"]
     DATA --> R1["/form/redirect/redirect-01.html"]
