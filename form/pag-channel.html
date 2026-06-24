@@ -142,12 +142,16 @@
                                     cell.colSpan = 3;
                                     cell.innerHTML = `<strong>${category.MPI_PAYMENT_METHOD}</strong>`;
         
-                                    category.MPI_PAYMENT_CHANNEL.forEach(item => {
-                                        let row = tbody.insertRow();
-                                        row.insertCell(0).textContent = item.MPI_CHANNEL_NAME;
-                                        row.insertCell(1).textContent = item.MPI_CHANNEL_ID;
-                                        row.insertCell(2).textContent = item.MPI_CHANNEL_STATUS === 'A' ? "Active" : "Offline";
-                                    });
+                                category.MPI_PAYMENT_CHANNEL.forEach(item => {
+                                    let row = tbody.insertRow();
+                                    row.insertCell(0).textContent = item.MPI_CHANNEL_NAME;
+                                    row.insertCell(1).textContent = item.MPI_CHANNEL_ID;
+                                
+                                    // Concise ternary version
+                                    row.insertCell(2).innerHTML = item.MPI_CHANNEL_STATUS === 'A' 
+                                        ? '<span style="color: green;">Active</span>' 
+                                        : '<span style="color: red; font-weight: bold;">Offline</span>';
+                                });
                                 });
                             } else {
                                 alert("No channels found: " + (data.MPI_ERROR_DESC || "Unknown Error"));
