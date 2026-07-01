@@ -70,7 +70,7 @@ async function triggerInquiry() {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                "merchantId": "000000000000006",
+                "merchantId": "000000000000003",
                 "pubKey": PUBLICKEY,
                 "purchaseId": inqId
             })
