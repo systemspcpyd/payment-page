@@ -79,7 +79,7 @@ async function triggerInquiry() {
         if (mkResult.errorCode !== "000") throw new Error("Key Exchange Failed");
 
         // Step B: RSA Sign
-        const rawData = "INQ" + "000000000000006" + inqId + originalTrxnId + ts + "458" + amount;
+        const rawData = "INQ" + "000000000000003" + inqId + originalTrxnId + ts + "458" + amount;
         const signature = await signData(rawData, PRIVATE_KEY_PEM);
         document.getElementById("INQ_MAC").value = signature;
 
