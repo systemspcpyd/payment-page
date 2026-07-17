@@ -2,190 +2,254 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Payment QR & Status Inquiry</title>
-    <link rel="stylesheet" href="../../css/form.css">
+    <title>Payment Initiation Form</title>
     <style>
         body { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            background-color: #f4f4f9; 
-            font-family: sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #f4f7f6; 
+            padding: 40px; 
+            color: #333; 
         }
-        .payment-container { 
-            width: 400px; 
-            text-align: center; 
-        }
-        .qr-card { 
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
             background: #fff; 
             padding: 30px; 
-            border-radius: 12px; 
-            border: 1px solid #ccc; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
         }
-        #qr-code-image { 
-            width: 220px; 
-            height: 220px; 
-            margin: 10px auto; 
-            display: none; 
-            border: 1px solid #eee; 
+        h2 { 
+            margin-top: 0; 
+            color: #111; 
+            border-bottom: 2px solid #eaeaea; 
+            padding-bottom: 10px; 
         }
-        .timer-display { 
-            font-size: 32px; 
-            font-weight: bold; 
-            color: #d9534f; 
-            margin: 10px 0; 
-            font-family: monospace; 
-        }
-        .input-group { 
-            text-align: left; 
-            margin-bottom: 15px; 
-        }
-        .input-group label { 
+        label { 
             display: block; 
-            font-size: 11px; 
+            margin-top: 15px; 
             font-weight: bold; 
-            margin-bottom: 5px; 
-            color: #777; 
-            letter-spacing: 0.5px; 
+            font-size: 13px; 
+            color: #666; 
         }
-        .input-group input { 
+        input, select, textarea { 
             width: 100%; 
-            padding: 12px; 
+            padding: 10px; 
+            margin-top: 5px; 
             border: 1px solid #ddd; 
-            border-radius: 6px; 
+            border-radius: 4px; 
             box-sizing: border-box; 
             font-size: 14px; 
-            background: #fafafa; 
         }
-        .input-group input:focus { 
+        input:focus, select:focus, textarea:focus { 
             border-color: #000; 
             outline: none; 
-            background: #fff; 
         }
-        .btn-check { 
-            margin-top: 10px; 
-            padding: 14px; 
+        button { 
             background: #000; 
             color: #fff; 
             border: none; 
-            border-radius: 6px; 
+            padding: 12px 20px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            border-radius: 4px; 
             cursor: pointer; 
-            width: 100%; 
-            font-weight: bold; 
-            font-size: 16px; 
-        }
-        .btn-check:hover { 
-            background: #333; 
-        }
-        .btn-check:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        #inquiry-status-text { 
-            font-size: 14px; 
-            font-weight: bold; 
             margin-top: 15px; 
-            min-height: 20px; 
+            margin-right: 10px; 
         }
-        .countdown-alert {
-            font-size: 13px;
-            color: #555;
-            margin-top: 10px;
-            font-style: italic;
+        button:hover { 
+            background: #222; 
+        }
+        button:disabled { 
+            background: #ccc; 
+            cursor: not-allowed; 
+        }
+        .action-area { 
+            margin-top: 20px; 
+            border-top: 1px solid #eaeaea; 
+            padding-top: 20px; 
         }
     </style>
+    <!-- Cryptographic library for client-side signing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.27/jsrsasign-all-min.js"></script>
 </head>
 <body>
 
-    <div class="payment-container">
-        <div class="qr-card">
-            <h2 style="margin-top: 0;">DuitNow QR</h2>
-            
-            <div id="qr-section" style="display: none;">
-                <p style="font-size: 14px; color: #555;">Scan with your mobile banking app</p>
-                <img id="qr-code-image" src="">
-                <div id="countdown-display" class="timer-display">00:00</div>
-                <p style="font-size: 12px; color: #999; margin-bottom: 20px;">Ref: <span id="ref-display"></span></p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-            </div>
-
-            <div class="input-group">
-                <label>TRANSACTION ID</label>
-                <input type="text" id="manual_trxn_id" placeholder="PAGUAT...">
-            </div>
-
-            <div class="input-group">
-                <label>AMOUNT (IN CENTS - e.g. 100 = RM1.00)</label>
-                <input type="number" id="manual_amount" placeholder="100">
-            </div>
-
-            <button id="btn-submit" class="btn-check" onclick="startStatusCheck()">Check Status Now</button>
-            <p id="inquiry-status-text"></p>
-            <p id="countdown-text" class="countdown-alert"></p>
-        </div>
-    </div>
-
-    <!-- Hidden form submitted silently inside the target iframe -->
-    <form id="inq-form" method="post" action="https://devlinkv2.paydee.co/mpigw/mpReq" target="inq_frame" style="display:none;">
-        <input type="hidden" name="MPI_RETURN_URL" value="https://payment-page-virid.vercel.app/api/callback">
-        <input type="hidden" name="MPI_TRANS_TYPE" value="INQ">
-        <input type="hidden" name="MPI_MERC_ID" value="000000000000003">
-        <input type="hidden" name="MPI_PURCH_DATE" id="INQ_PURCH_DATE">
-        <input type="hidden" name="MPI_TRXN_ID" id="INQ_TRXN_ID">
-        <input type="hidden" name="MPI_ORI_TRXN_ID" id="INQ_ORI_TRXN_ID">
+<div class="container">
+    <h2>Initiate Payment Transaction</h2>
+    <form id="form" method="post" action="">
+        <input type="hidden" name="MPI_TRANS_TYPE" value="SALES">
+        <input type="hidden" name="MPI_MERC_ID" value="000000000000033">
+        <input type="hidden" name="MPI_RESPONSE_TYPE" value="JSON">
+        <input type="hidden" name="MPI_RETURN_URL" id="MPI_RETURN_URL">
         <input type="hidden" name="MPI_PURCH_CURR" value="458">
-        <input type="hidden" name="MPI_PURCH_AMT" id="INQ_PURCH_AMT">
-        <textarea name="MPI_MAC" id="INQ_MAC"></textarea>
+        
+        <label>TRANSACTION ID (Auto-generated)</label>
+        <input type="text" name="MPI_TRXN_ID" id="MPI_TRXN_ID" readonly>
+        
+        <label>TRANSACTION DATE (Auto-generated)</label>
+        <input type="text" name="MPI_PURCH_DATE" id="MPI_PURCH_DATE" readonly>
+
+        <label>PAYMENT AMOUNT (in cents - e.g. 100 = RM1.00)</label>
+        <input type="number" name="MPI_PURCH_AMT" id="MPI_PURCH_AMT" value="100">
+
+        <label>CUSTOMER EMAIL</label>
+        <input type="email" name="MPI_EMAIL" value="customer@example.com">
+
+        <label>MOBILE PHONE COUNTRY CODE</label>
+        <input type="text" name="MPI_MOBILE_PHONE_CC" value="60">
+
+        <label>MOBILE PHONE NUMBER</label>
+        <input type="text" name="MPI_MOBILE_PHONE" value="123456789">
+
+        <label>GENERATED SIGNATURE (MAC)</label>
+        <textarea name="MPI_MAC" id="MPI_MAC" rows="3" readonly placeholder="Click 'Generate MAC & Pay' to sign transaction"></textarea>
     </form>
-    
-    <iframe name="inq_frame" style="display:none;"></iframe>
 
-    <!-- Load the customized handling script -->
-    <script src="inquiry-handler.js"></script>
-    <script>
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const qr = params.get('MPI_QR_CODE');
-            const expiry = params.get('MPI_QR_EXPIRY_SECONDS');
-            const tid = params.get('MPI_TRXN_ID') || params.get('MPI_TXN_ID');
-            const amt = params.get('MPI_PURCH_AMT');
+    <div class="action-area">
+        <button id="btn-pay" onclick="generateMacAndPay()">Generate MAC & Pay</button>
+    </div>
+</div>
 
-            // 1. Fill inputs automatically if values are in URL
-            if (tid) document.getElementById('manual_trxn_id').value = tid;
-            if (amt) document.getElementById('manual_amount').value = amt;
+<script>
+    const PAYMENT_REQUEST_URL = "https://devlink.paydee.co/mpi/mpReq";
+    const VERCEL_CALLBACK_URL = "https://payment-page-virid.vercel.app/api/callback";
+    const PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAq8j2SHHfzMLlhYppnlk+QqjjjZwMkhK6s6rERd0JhhY/6+Md
+4Z0327uEdfNbJrSEPJVPT55gjRhx4MorEhrabuafuY8thSPS4epwkOjjPtELwZxV
+iWe1dzG5TQakJ/i8ZOQuUYFJg02RcwUTzE3ty+x7mkwj9t2wAdRqTagyaDIAVMTx
+P/Y4AS76xjA3aH43Q0HKHGAxxIlXBIQxImuPhlUbPtVtTHIsUwkIx2BDh8kPZ3Mg
+r3Cyky0F+cHpEFSi3rPSSLD/FVHlJRW2cODVm8E-s98CURQYs1npzDztzZgZPnnb
+9K57CB2Z50Ve6qUV7z4+uHs3nehiMJHktIs7LQIDAQABAoIBAAufb7vBaf0ugfKx
+8D56AaKR+b925korK+hZw/40G9+veV4KQlclrjCsSc854BoeJET9wd18X5em++wp
+Juvf1uqiU6lC54y2up8gH8NLi+CP//shYDoz7aJlwgiqS94L0CIFZvWLHqsHIFxc
+uhUHKsaINr60VcnvVZLHc/UoIwJLT1Hk2gIMnxxnCqkL1m/BNDeYaT30DLMPaeby
+naEsq6JG+pk0szJ9ivTZQrVzWL88qYJor7eR+MGBh65fhhSZyn229EL9DtwVGkU2
+8rlFwcCalhmCIgJO9vPK3QLoomT4FfokuECrxv0UwopYPBXyUycvzHmvbFTt5FS8
+KLgfMcMCgYEAwqKKSeAuoQpJO4x8hP7fYQ94ezoRkDlV9Q5ICcgJW6giMbzT2adg
+d2nuxQIwLRX/P4Dwh2OxCnOrX1FAMxmbs9/6OGgjHhKAAM0pIowZFs4Vqu/QlAZ5
+UdPzHdGuA5oSEBhVMxe0L1dWbQr0UpjemH6gOfswDFYsIawLXOPI+TsCgYEA4fIm
+QqKIBoYAGUPuNfjoK2ZQpRaFGAGuvfpSyljMQDnYJJtOGTW8SI0QFzd31snYx5yP
+vEvkR4lEcVPi6t6Mkdd4KVkmktdjIQ0ZOAlbBaaEWFy6lN7TyINJ7BAYFO/1D3Uj
+4Gi9O7dV7v49Bzp5tVNFrUihM1yfOdUfP3gCFrcCgYB8YtoT6mSCYIt6tgaiDCx/
+4B40SmENFcdcTBs3vRJV9DaeKLoPIEujJR0F5KcbOTKdx+5v6AMt1cxQpyFrRtNd
++ib0Q4El59bMLFE8leI208+/JXHcF+MSq2x0wxr9jEo85QAWHfD2TE+ccmLAIpgn
+Rs1pIKGNUMj1X/kHDT/UHwKBgAsmSeEL6C56OlME2SJsr/hESkJ7RAIVQyw4yBEY
+JKwerp3P1CDGWA40d9DNeeptd3cSML2X+SHWkjwNaasxZDpmKZXQwmiInGmrHc14
+GLfEqc86dDKYdFb2s5UkjiuqU6t5mlWelYf22hS7EwPiTNM30r5kUSAZt/nAnJQj
+NectAoGADXNyBnmq65m1YMlWe+PtDEi/hUZagVDPG7xh3T811fAi6+TZSLXCDVR4
+gju9FJkwjce29Bmt7xbFYRvIfVUGbuvMxvgBJG4A2BG8wrFbIGDLQEk5VYBvSkKK
+hniCoSnVEJYlfgyp9ri1vEgXrX18FwY1KADRc4EnDlEzwkkAAl0=
+-----END RSA PRIVATE KEY-----`;
 
-            // 2. Setup QR display and Gateway Expiry Timer
-            if (qr && expiry) {
-                document.getElementById('qr-code-image').src = "data:image/png;base64," + qr;
-                document.getElementById('qr-code-image').style.display = "block";
-                document.getElementById('qr-section').style.display = "block";
-                document.getElementById('ref-display').innerText = tid;
-                startGatewayExpiryTimer(parseInt(expiry));
-            }
-        };
+    /**
+     * Set the current date timestamp and Transaction ID on load
+     */
+    function initFields() {
+        const d = new Date();
+        const timestamp = d.getFullYear() + 
+            (d.getMonth() + 1).toString().padStart(2, '0') + 
+            d.getDate().toString().padStart(2, '0') + 
+            d.getHours().toString().padStart(2, '0') + 
+            d.getMinutes().toString().padStart(2, '0') + 
+            d.getSeconds().toString().padStart(2, '0');
+        
+        document.getElementById("MPI_PURCH_DATE").value = timestamp;
+        document.getElementById("MPI_TRXN_ID").value = "MPIUAT" + timestamp;
+    }
 
-        function startGatewayExpiryTimer(seconds) {
-            let timer = seconds;
-            const display = document.getElementById('countdown-display');
-            const countdown = setInterval(function () {
-                let minutes = parseInt(timer / 60, 10);
-                let seconds = parseInt(timer % 60, 10);
+    /**
+     * Concatenates payload parameters and signs them
+     */
+    function signPayload() {
+        const rawString = 
+            "SALES" +
+            "000000000000033" +
+            "" + // MPI_PAN
+            "" + // MPI_CARD_HOLDER_NAME
+            "" + // MPI_PAN_EXP
+            "" + // MPI_CVV2
+            document.getElementById("MPI_TRXN_ID").value +
+            "" + // MPI_ORI_TRXN_ID
+            document.getElementById("MPI_PURCH_DATE").value +
+            "458" +
+            document.getElementById("MPI_PURCH_AMT").value +
+            document.forms["form"]["MPI_EMAIL"].value +
+            document.forms["form"]["MPI_MOBILE_PHONE"].value +
+            document.forms["form"]["MPI_MOBILE_PHONE_CC"].value +
+            "" + // MPI_ADDITIONAL_INFO_IND
+            "" + // MPI_RECURR_FREQ
+            "";  // MPI_RECURR_EXPIRY
 
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
+        try {
+            const cleanKey = PRIVATE_KEY.replace(/^[ \t]+/gm, '');
+            let sig = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
+            sig.init(cleanKey);
+            sig.updateString(rawString);
+            let base64UrlValue = hextob64(sig.sign())
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
 
-                display.textContent = minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    clearInterval(countdown);
-                    display.textContent = "EXPIRED";
-                    display.style.color = "#888";
-                }
-            }, 1000);
+            document.getElementById("MPI_MAC").value = base64UrlValue;
+            return true;
+        } catch (e) {
+            console.error(e);
+            alert("Error signing payload. Check your private key configuration.");
+            return false;
         }
-    </script>
+    }
+
+    /**
+     * Submits transaction to Paydee, extracts the critical inquiry keys, 
+     * and hands over processing to status-inquiry.html
+     */
+    async function generateMacAndPay() {
+        if (!signPayload()) return;
+
+        const payButton = document.getElementById("btn-pay");
+        payButton.disabled = true;
+        payButton.innerText = "Processing Payment...";
+
+        document.getElementById("MPI_RETURN_URL").value = VERCEL_CALLBACK_URL;
+
+        const form = document.getElementById("form");
+        const formData = new FormData(form);
+        const payload = new URLSearchParams();
+
+        formData.forEach((value, key) => {
+            if (value.trim() !== "") payload.append(key, value);
+        });
+
+        try {
+            const response = await fetch(PAYMENT_REQUEST_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: payload
+            });
+
+            const data = await response.json();
+
+            // Extract core fields required strictly for doing the status inquiry checking
+            const trxnId = data.MPI_TRXN_ID || document.getElementById("MPI_TRXN_ID").value;
+            const amount = data.MPI_PURCH_AMT || document.getElementById("MPI_PURCH_AMT").value;
+
+            // Redirect the window to your clean transaction status polling page
+            const queryParams = new URLSearchParams({
+                MPI_TRXN_ID: trxnId,
+                MPI_PURCH_AMT: amount
+            }).toString();
+
+            window.location.href = `status-inquiry.html?${queryParams}`;
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert("Transaction initiation failed: " + error.message);
+            payButton.disabled = false;
+            payButton.innerText = "Generate MAC & Pay";
+        }
+    }
+
+    window.onload = initFields;
+</script>
 </body>
 </html>
